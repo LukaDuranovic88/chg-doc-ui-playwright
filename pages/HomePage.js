@@ -19,15 +19,15 @@ class HomePage extends BasePage {
   }
 
   // Replaces: homeSteps.openHomePage(entityId, page, division)
-  async openHomePage(entityId, pageEnum, division) {
-    const homeURL = `${environment.baseURL}/#/home?primaryEntityId=${entityId}&entityIds=${entityId}&page=${pageEnum}&division=${division}`;
-    await this.page.goto(environment.baseURL);
-    await this.page.evaluate((url) => { window.location.href = url; }, homeURL);
-    await this.page.waitForFunction(
-      () => window.location.hash.includes('home'),
-      { timeout: 15000 }
-    );
-  }
+async openHomePage(entityId, pageEnum, division, entityIds = null) {
+  const homeURL = `${environment.baseURL}/#/home?primaryEntityId=${entityId}&entityIds=${entityIds ?? entityId}&page=${pageEnum}&division=${division}`;
+  await this.page.goto(environment.baseURL);
+  await this.page.evaluate((url) => { window.location.href = url; }, homeURL);
+  await this.page.waitForFunction(
+    () => window.location.hash.includes('home'),
+    { timeout: 15000 }
+  );
+}
 
   // Replaces: homeSteps.openUploadButtonModal()
   async openUploadModal() {

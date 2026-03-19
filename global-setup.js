@@ -7,7 +7,7 @@ module.exports = async () => {
   console.log('👤 TEST_USERNAME:', process.env.TEST_USERNAME);
   console.log('🔑 TEST_PASSWORD loaded:', !!process.env.TEST_PASSWORD);
 
-  const browser = await chromium.launch({ headless: false });
+  const browser = await chromium.launch({ headless: true });
   const context = await browser.newContext({ ignoreHTTPSErrors: true });
   const page = await context.newPage();
 

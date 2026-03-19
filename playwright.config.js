@@ -17,6 +17,7 @@ const config = {
   reporter: 'html',
 
   use: {
+    headless: true,
     baseURL: environment.baseURL,
     storageState: '.auth/session.json',
     ignoreHTTPSErrors: true, // fixes SSL cert error on localhost for all browsers
@@ -27,7 +28,6 @@ const config = {
       name: 'chrome',
       use: {
         browserName: 'chromium',
-        headless: false,
         viewport: { width: 720, height: 720 },
         screenshot: 'on',
         video: 'retain-on-failure',

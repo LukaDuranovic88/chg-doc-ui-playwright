@@ -55,7 +55,6 @@ npx playwright install
 ```
 
 ### 2. Environment Setup
-
 ```bash
 # Copy environment template
 cp .env.example .env
@@ -63,6 +62,10 @@ cp .env.example .env
 # Edit .env with your credentials
 nano .env  # or use your preferred editor
 ```
+
+> ⚠️ **Never commit `.env` to the repository.**  
+> It contains your personal Okta credentials and is already listed in `.gitignore`.  
+> Each developer maintains their own local copy — only `.env.example` gets pushed to git.
 
 ### 3. Run Your First Test
 
@@ -95,10 +98,20 @@ DIVISION=CHS                               # Business division
 # ===========================================
 # OPTIONAL SETTINGS
 # ===========================================
-HEADLESS=true                               # Run in headless mode
 TIMEOUT=30000                              # Default timeout in ms
 PARALLEL_WORKERS=2                         # Number of parallel test workers
 ```
+
+### Headless Mode
+
+Headless mode is configured directly in `playwright.config.js` and `global-setup.js` — not via an environment variable.
+
+| File | Controls |
+|------|----------|
+| `playwright.config.js` → `use.headless` | All test browsers |
+| `global-setup.js` → `chromium.launch({ headless })` | The one-time Okta login browser |
+
+Set both to `false` when debugging, `true` for CI and normal runs.
 
 ### Environment Options
 
@@ -150,7 +163,7 @@ npx playwright test --grep "upload document"
 ```bash
 # Open chg-sf-doc-service in IntelliJ and run:
 # - serve:local    (for TEST_ENV=local)
-# - serve:feature  (for TEST_ENV=feature) 
+# - serve:feature  (for TEST_ENV=feature)
 # - serve:dev      (for TEST_ENV=dev)
 ```
 
@@ -207,26 +220,42 @@ npx playwright test --headed --slowMo=1000
 ├── 📄 README.md                          # This file
 ├── 📄 package.json                       # Dependencies and scripts
 ├── 📄 playwright.config.js               # Playwright configuration
-├── 📄 global-setup.js                    # Authentication setup
+├── 📄 global-setup.js                    # One-time Okta authentication
 ├── 📄 .env.example                       # Environment template
 ├── 📁 config/
-│   └── 📄 environments.js                # Environment configurations
+│   └── 📄 environments.js                # Environment URL configurations
 ├── 📁 pages/                             # Page Object Models
 │   ├── 📄 BasePage.js                    # Base page class
-│   ├── 📄 HomePage.js                    # Home page objects
-│   ├── 📄 LoginPage.js                   # Login page objects
+│   ├── 📄 HomePage.js                    # Home page interactions
 │   └── 📁 modals/
-│       └── 📄 UploadModal.js             # Upload modal objects
+│       └── 📄 UploadModal.js             # Upload modal interactions
 ├── 📁 fixtures/
 │   └── 📄 base.fixture.js                # Custom test fixtures
 ├── 📁 helpers/
 │   └── 📄 apiClient.js                   # API utilities
 ├── 📁 test-data/
-│   ├── 📄 users.json                     # Test user data
-│   └── 📁 enums/                         # Test constants
+│   └── 📁 enums/                         # Migrated from Java/Serenity enums
+│       ├── 📄 Audited.js
+│       ├── 📄 Categories.js
+│       ├── 📄 Classification.js
+│       ├── 📄 ContentTypes.js
+│       ├── 📄 Division.js
+│       ├── 📄 DocumentColumns.js
+│       ├── 📄 DocumentStatus.js
+│       ├── 📄 MetadataFields.js
+│       ├── 📄 PageEnum.js
+│       ├── 📄 Signed.js
+│       ├── 📄 Specialty.js
+│       ├── 📄 State.js
+│       ├── 📄 SubCategory.js
+│       ├── 📄 TestEntityIds.js
+│       ├── 📄 TestMultiEntityIds.js
+│       └── 📄 VQFilter.js
 ├── 📁 tests/
 │   ├── 📁 api/                           # API tests
 │   └── 📁 ui/                            # UI tests
+│       ├── 📄 smoke.spec.js
+│       └── 📄 contentType.spec.js
 ├── 📁 docs/
 │   └── 📄 MCP-AGENTS_SETUP.md           # AI testing guide
 └── 📁 .vscode/
@@ -301,7 +330,7 @@ npx playwright show-trace test-results/example-test/trace.zip
 
 By default, Playwright captures:
 - 📸 **Screenshots** on test failure
-- 🎥 **Videos** for failed tests  
+- 🎥 **Videos** for failed tests
 - 🔍 **Traces** for debugging
 
 Files are saved to `test-results/` and `playwright-report/` directories.
@@ -379,7 +408,7 @@ npx playwright init-agents --loop=vscode
 ## 🚀 Contributing
 
 1. **Feature Branches:** Create feature branches from `main`
-2. **Test Coverage:** Ensure new features include corresponding tests  
+2. **Test Coverage:** Ensure new features include corresponding tests
 3. **Code Review:** All changes require peer review
 4. **Documentation:** Update README when adding new features
 
@@ -390,7 +419,6 @@ This project is part of CHG Healthcare's internal testing infrastructure.
 ---
 
 > **Happy Testing!** 🎭✨
-
 
 ## How Authentication Works
 
