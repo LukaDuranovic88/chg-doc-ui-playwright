@@ -28,6 +28,7 @@ This test suite provides comprehensive end-to-end testing for the DocUI applicat
 - 🎥 **Rich Reporting** - Screenshots, videos, traces on failure
 - 🤖 **AI Test Generation** - Playwright MCP agents for automated test creation
 - 📊 **Page Object Model** - Maintainable and scalable test architecture
+- 🔌 **API Testing** - Direct HTTP testing via Playwright's built-in request client (no REST Assured needed)
 
 ## ✅ Prerequisites
 
@@ -153,7 +154,15 @@ npx playwright test tests/ui/
 
 # Run tests matching a pattern
 npx playwright test --grep "upload document"
+
 ```
+### API Test Execution
+```bash
+# Run API tests (no browser required)
+npx playwright test --config=playwright.api.config.js
+```
+
+> 📖 **Detailed API Guide:** See [docs/API-TESTING-SETUP.md](docs/API-TESTING-SETUP.md) for full API testing documentation.
 
 ### Environment-Specific Testing
 
@@ -251,9 +260,11 @@ npx playwright test --headed --slowMo=1000
 │       ├── 📄 TestEntityIds.js
 │       ├── 📄 TestMultiEntityIds.js
 │       └── 📄 VQFilter.js
-├── 📁 tests/
-│   ├── 📁 api/                           # API tests
-│   └── 📁 ui/                            # UI tests
+├── 📁 api/                               # API test clients and specs
+│   ├── 📁 clients/
+│   │   ├── 📄 OktaClient.js              # Okta token retrieval
+│   │   └── 📄 DmsApiClient.js            # DMS GET/DELETE HTTP client
+│   └── 📄 ApiStepsV2.spec.js             # DELETE endpoint tests                          # UI tests
 │       ├── 📄 smoke.spec.js
 │       └── 📄 contentType.spec.js
 ├── 📁 docs/
