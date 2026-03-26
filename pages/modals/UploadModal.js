@@ -1,46 +1,70 @@
-const { BasePage } = require('../BasePage');
+const path = require('path');
+const { BaseModal } = require('./BaseModal');
 
-class UploadModal extends BasePage {
+class UploadModal extends BaseModal {
   constructor(page) {
     super(page);
-    this.contentTypeDropdown = page.locator('select.gear-qa-content-type');
-    this.subCategoryDropdown = page.locator('select.gear-qa-sub-category');
-    this.backButton = page.getByRole('button', { name: 'Back' });
+
+    this.modal          = page.locator('#upload-document-modal');
+    this.backButton     = page.getByRole('button', { name: 'Back' });
+
+    // Hidden file input — made visible via JS in Serenity workaround
+    // Playwright handles file inputs natively, no JS trick needed
+    this.fileInput      = page.locator('input[type="file"]');
+
+    // Upload file label — visible after file is attached
+    this.uploadFileLabel = page.locator('.gear-qa-upload-file-label');
   }
 
-  // Defined as method (not arrow function) so this.page is always available
-  categoryCard(categoryName) {
-    return this.page.getByText(categoryName, { exact: true });
+  // ─────────────────────────────────────────────
+  // Attaches a file from test-data/test-files/
+  // Playwright sets file input directly — no JS workaround needed
+  // ─────────────────────────────────────────────
+  async uploadFile(fileName = 'test.pdf') {
+    const filePath = path.resolve(__dirname, '../../test-data/test-files', fileName);
+    await this.fileInput.waitFor({ state: 'attached' });
+    await this.fileInput.setInputFiles(filePath);
+    await this.uploadFileLabel.waitFor({ state: 'visible' });
   }
 
-  async openCategory(categoryName) {
-    await this.categoryCard(categoryName).waitFor({ state: 'visible' });
-    await this.categoryCard(categoryName).click();
-  }
-
-  async selectContentType(contentTypeName) {
-    await this.contentTypeDropdown.waitFor({ state: 'visible' });
-    await this.contentTypeDropdown.selectOption({ label: contentTypeName });
-  }
-
+  // ─────────────────────────────────────────────
+  // Returns all available content type options for the selected category
+  // ─────────────────────────────────────────────
   async getContentTypes() {
     await this.contentTypeDropdown.waitFor({ state: 'visible' });
     return this.contentTypeDropdown.locator('option').allTextContents();
   }
 
+  // ─────────────────────────────────────────────
+  // Returns all available sub-category options for the selected content type
+  // ─────────────────────────────────────────────
   async getSubCategories() {
     await this.subCategoryDropdown.waitFor({ state: 'visible' });
     return this.subCategoryDropdown.locator('option').allTextContents();
   }
 
-  async clickBackButton() {
+  // ─────────────────────────────────────────────
+  // Goes back to category selection screen
+  // ─────────────────────────────────────────────
+  async clickBack() {
     await this.backButton.waitFor({ state: 'visible' });
     await this.backButton.click();
   }
 
+  // ─────────────────────────────────────────────
+  // Closes the modal via Escape key and waits for it to be hidden
+  // ─────────────────────────────────────────────
   async closeModal() {
     await this.page.keyboard.press('Escape');
-    await this.page.locator('#upload-document-modal').waitFor({ state: 'hidden' });
+    await this.modal.waitFor({ state: 'hidden' });
+  }
+
+  // ─────────────────────────────────────────────
+  // Submits and closes — passes modal locator to base
+  // so the final wait targets this modal specifically
+  // ─────────────────────────────────────────────
+  async submitAndClose() {
+    await super.submitAndClose(this.modal);
   }
 }
 

@@ -1,6 +1,8 @@
-const { test: base } = require('@playwright/test');
-const { HomePage }    = require('../pages/HomePage');
-const { UploadModal } = require('../pages/modals/UploadModal');
+const { test: base }          = require('@playwright/test');
+const { HomePage }            = require('../pages/HomePage');
+const { UploadModal }         = require('../pages/modals/UploadModal');
+const { RequestModal }        = require('../pages/modals/RequestModal');
+const { CategoryComponent }   = require('../pages/CategoryComponent');
 
 const test = base.extend({
 
@@ -10,6 +12,14 @@ const test = base.extend({
 
   uploadModal: async ({ page }, use) => {
     await use(new UploadModal(page));
+  },
+
+  requestModal: async ({ page }, use) => {
+    await use(new RequestModal(page));
+  },
+
+  categoryComponent: async ({ page }, use) => {
+    await use(new CategoryComponent(page));
   },
 
 });

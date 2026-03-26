@@ -4,7 +4,6 @@ const environment = require('../config/environments');
 class HomePage extends BasePage {
   constructor(page) {
     super(page);
-    // Replaces: @FindBy annotations in Serenity HomePage.java
     this.uploadButton  = page.getByRole('button', { name: 'Upload' });
     this.requestButton = page.getByRole('button', { name: 'Request' });
 
@@ -15,19 +14,29 @@ class HomePage extends BasePage {
     this.bulkClearButton    = page.getByRole('button', { name: 'Clear' });
 
     // Error modal
-    this.errorModalMessage = page.getByTestId('error-modal-message');
+    this.errorModalMessage  = page.getByTestId('error-modal-message');
+
+    // Okta session expiry dialog
+    this.oktaSessionDialog  = page.getByText('Your Okta session has ended');
+    this.oktaSessionOkBtn   = page.getByRole('button', { name: 'OK' });
   }
 
   // Replaces: homeSteps.openHomePage(entityId, page, division)
-async openHomePage(entityId, pageEnum, division, entityIds = null) {
-  const homeURL = `${environment.baseURL}/#/home?primaryEntityId=${entityId}&entityIds=${entityIds ?? entityId}&page=${pageEnum}&division=${division}`;
-  await this.page.goto(environment.baseURL);
-  await this.page.evaluate((url) => { window.location.href = url; }, homeURL);
-  await this.page.waitForFunction(
-    () => window.location.hash.includes('home'),
-    { timeout: 15000 }
-  );
-}
+  async openHomePage(entityId, pageEnum, division, entityIds = null) {
+    const homeURL = `${environment.baseURL}/#/home?primaryEntityId=${entityId}&entityIds=${entityIds ?? entityId}&page=${pageEnum}&division=${division}`;
+    await this.page.goto(environment.baseURL);
+    await this.page.evaluate((url) => { window.location.href = url; }, homeURL);
+    await this.page.waitForFunction(
+      () => window.location.hash.includes('home'),
+      { timeout: 15000 }
+    );
+
+    // Handle Okta session expiry dialog if it appears
+    const isExpired = await this.oktaSessionDialog.isVisible({ timeout: 3000 }).catch(() => false);
+    if (isExpired) {
+      await this.oktaSessionOkBtn.click();
+    }
+  }
 
   // Replaces: homeSteps.openUploadButtonModal()
   async openUploadModal() {
