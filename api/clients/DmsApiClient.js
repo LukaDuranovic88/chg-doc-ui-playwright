@@ -1,5 +1,6 @@
 const { request } = require('@playwright/test');
 const { OktaClient } = require('./OktaClient');
+const environment = require('../../config/environments'); // ← replaces process.env.DMS_BASE_URL
 const fs = require('fs');
 const path = require('path');
 
@@ -23,7 +24,7 @@ class DmsApiClient {
 
   // GET /v2/document/?entityId=xxx&delegate=xxx&delegateType=account
   async getDocumentsForEntity(entityId, division) {
-    const context = await request.newContext({ baseURL: process.env.DMS_BASE_URL });
+    const context = await request.newContext({ baseURL: environment.dmsURL }); // ← changed
     const headers = await this.getHeaders();
     const response = await context.get(DOCUMENT_URL, {
       headers,
@@ -43,7 +44,7 @@ class DmsApiClient {
 
   // DELETE /v2/document/{id}?delegate=xxx&delegateType=account
   async deleteDocument(documentId, division) {
-    const context = await request.newContext({ baseURL: process.env.DMS_BASE_URL });
+    const context = await request.newContext({ baseURL: environment.dmsURL }); // ← changed
     const headers = await this.getHeaders();
     const response = await context.delete(`${DOCUMENT_URL}${documentId}`, {
       headers,
@@ -65,7 +66,7 @@ class DmsApiClient {
     const filePath = path.resolve(__dirname, '../../test-data/test-files', fileName);
     const fileBuffer = fs.readFileSync(filePath);
 
-    const context = await request.newContext({ baseURL: process.env.DMS_BASE_URL });
+    const context = await request.newContext({ baseURL: environment.dmsURL }); // ← changed
     const response = await context.post('/v2/document/file/', {
       headers: {
         'Authorization': `Bearer ${token}`,
@@ -103,7 +104,7 @@ class DmsApiClient {
     const filePath = path.resolve(__dirname, '../../test-data/test-files', fileName);
     const fileBuffer = fs.readFileSync(filePath);
 
-    const context = await request.newContext({ baseURL: process.env.DMS_BASE_URL });
+    const context = await request.newContext({ baseURL: environment.dmsURL }); // ← changed
     const multipart = {
       relatedEntities: JSON.stringify([{ entityId, origin: 'FOX', context: 'provider' }]),
       contentType,
@@ -143,7 +144,7 @@ class DmsApiClient {
 
   // POST /v2/document/?delegate=xxx&delegateType=account
   async requestDocumentReturnId(entityId, contentType, division) {
-    const context = await request.newContext({ baseURL: process.env.DMS_BASE_URL });
+    const context = await request.newContext({ baseURL: environment.dmsURL }); // ← changed
     const headers = await this.getHeaders();
     const body = {
       contentType,
@@ -172,7 +173,7 @@ class DmsApiClient {
 
   // GET /v2/document/{id}?delegate=xxx&delegateType=account
   async getDocumentById(documentId, division) {
-    const context = await request.newContext({ baseURL: process.env.DMS_BASE_URL });
+    const context = await request.newContext({ baseURL: environment.dmsURL }); // ← changed
     const headers = await this.getHeaders();
     const response = await context.get(`${DOCUMENT_URL}${documentId}`, {
       headers,
