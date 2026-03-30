@@ -6,6 +6,8 @@ const { TestMultiEntityIds, buildEntityParam } = require('../../test-data/enums/
 const { Division } = require('../../test-data/enums/Division');
 const { PageEnum } = require('../../test-data/enums/PageEnum');
 
+const ROGER_PROVIDER = TestEntityIds.ROGER_RECRUIT_PROVIDER.entityId;
+
 // ─────────────────────────────────────────────────────────────
 // Helper — open upload modal, verify content types, go back
 // ─────────────────────────────────────────────────────────────
@@ -15,7 +17,7 @@ async function verifyContentTypes(homePage, uploadModal, category, expectedTypes
   const actual = await uploadModal.getContentTypes();
   expect(actual).toHaveLength(expectedTypes.length);
   expect(actual).toEqual(expect.arrayContaining(expectedTypes));
-  await uploadModal.closeModal();
+  await uploadModal.clickBackButton();
 }
 
 // ─────────────────────────────────────────────────────────────
@@ -27,7 +29,7 @@ async function verifySubCategoryCount(homePage, uploadModal, category, contentTy
   await uploadModal.selectContentType(contentType);
   const subCategories = await uploadModal.getSubCategories();
   expect(subCategories).toHaveLength(expectedCount);
-  await uploadModal.closeModal();
+  await uploadModal.clickBackButton();
 }
 
 test.describe('Content Type Smoke Tests', () => {
@@ -37,7 +39,7 @@ test.describe('Content Type Smoke Tests', () => {
   // ─────────────────────────────────────────────────────────────
   test('Provider CHS - all content types', async ({ homePage, uploadModal }) => {
     await homePage.openHomePage(
-      TestEntityIds.DR_TEST_TEST_PROVIDER.entityId,
+      ROGER_PROVIDER,
       PageEnum.provider,
       Division.CHS
     );

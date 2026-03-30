@@ -59,7 +59,7 @@ class DmsApiClient {
   }
 
   // POST /v2/document/file/?delegate=xxx&delegateType=account
-  async uploadDocument(entityId, contentType, division, fileName = 'test.pdf') {
+  async uploadDocumentReturnJson(entityId, contentType, division, fileName = 'test.pdf') {
     const token = await this.oktaClient.getToken();
     const apiKey = process.env.EGG_API_KEY;
     const filePath = path.resolve(__dirname, '../../test-data/test-files', fileName);
@@ -91,6 +91,99 @@ class DmsApiClient {
 
     if (!response.ok()) {
       throw new Error(`POST upload failed [${division}]: ${response.status()}`);
+    }
+
+    return response.json();
+  }
+
+  // POST /v2/document/file/?delegate=xxx&delegateType=account
+  async uploadDocumentReturnId(documentId, entityId, fileName = 'test.pdf', contentType, division) {
+    const token = await this.oktaClient.getToken();
+    const apiKey = process.env.EGG_API_KEY;
+    const filePath = path.resolve(__dirname, '../../test-data/test-files', fileName);
+    const fileBuffer = fs.readFileSync(filePath);
+
+    const context = await request.newContext({ baseURL: process.env.DMS_BASE_URL });
+    const multipart = {
+      relatedEntities: JSON.stringify([{ entityId, origin: 'FOX', context: 'provider' }]),
+      contentType,
+      description: 'Gear API UPLOAD Test from rest-api-tests-2 V2',
+      requestSource: 'FOX',
+      currentUser: process.env.API_USERNAME,
+      file: {
+        name: fileName,
+        mimeType: 'application/pdf',
+        buffer: fileBuffer,
+      },
+    };
+
+    if (documentId != null) {
+      multipart.id = String(documentId);
+    }
+
+    const response = await context.post('/v2/document/file/', {
+      headers: {
+        'Authorization': `Bearer ${token}`,
+        'ApiKey': apiKey,
+      },
+      params: {
+        delegate: division,
+        delegateType: 'account',
+      },
+      multipart,
+    });
+
+    if (!response.ok()) {
+      throw new Error(`POST upload failed [${division}]: ${response.status()}`);
+    }
+
+    const documentResource = await response.json();
+    return documentResource.id;
+  }
+
+  // POST /v2/document/?delegate=xxx&delegateType=account
+  async requestDocumentReturnId(entityId, contentType, division) {
+    const context = await request.newContext({ baseURL: process.env.DMS_BASE_URL });
+    const headers = await this.getHeaders();
+    const body = {
+      contentType,
+      uploadedFrom: 'FOX',
+      relatedEntities: [{ entityId, origin: 'FOX', context: 'provider' }],
+      changeSource: 'FOX',
+      description: 'Gear API REQUEST Test from rest-api-tests-2 V2',
+    };
+
+    const response = await context.post(DOCUMENT_URL, {
+      headers,
+      params: {
+        delegate: division,
+        delegateType: 'account',
+      },
+      data: body,
+    });
+
+    if (response.status() !== 200) {
+      throw new Error(`POST request document failed [${division}]: ${response.status()}`);
+    }
+
+    const documentResource = await response.json();
+    return documentResource.id;
+  }
+
+  // GET /v2/document/{id}?delegate=xxx&delegateType=account
+  async getDocumentById(documentId, division) {
+    const context = await request.newContext({ baseURL: process.env.DMS_BASE_URL });
+    const headers = await this.getHeaders();
+    const response = await context.get(`${DOCUMENT_URL}${documentId}`, {
+      headers,
+      params: {
+        delegate: division,
+        delegateType: 'account',
+      },
+    });
+
+    if (response.status() !== 200) {
+      throw new Error(`GET document by ID failed [id: ${documentId}, division: ${division}]: ${response.status()}`);
     }
 
     return response.json();

@@ -6,7 +6,7 @@ const environment = require('./config/environments');
 const config = {
   testDir: './tests',
   retries: 1,
-  // workers: 1,
+  workers: 1,
   timeout: 30 * 1000,
   expect: {
     timeout: 5000
@@ -17,7 +17,7 @@ const config = {
   reporter: 'html',
 
   use: {
-    headless: true,
+    headless: false,
     baseURL: environment.baseURL,
     storageState: '.auth/session.json',
     ignoreHTTPSErrors: true, // fixes SSL cert error on localhost for all browsers
@@ -28,10 +28,13 @@ const config = {
       name: 'chrome',
       use: {
         browserName: 'chromium',
-        viewport: { width: 720, height: 720 },
+        viewport: null,
+        launchOptions: {
+          args: ['--start-maximized'],
+        },
         screenshot: 'on',
         video: 'retain-on-failure',
-        ignoreHTTPSErrors: true,  // fixed typo: was ignoreHttpError
+        ignoreHTTPSErrors: true,
         permissions: ['geolocation'],
         trace: 'on',
       },

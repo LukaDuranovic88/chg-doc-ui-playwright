@@ -46,7 +46,7 @@ class UploadModal extends BaseModal {
   // ─────────────────────────────────────────────
   // Goes back to category selection screen
   // ─────────────────────────────────────────────
-  async clickBack() {
+  async clickBackButton() {
     await this.backButton.waitFor({ state: 'visible' });
     await this.backButton.click();
   }

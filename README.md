@@ -1,6 +1,6 @@
 # 🎭 DocUI Playwright Test Suite
 
-> **Modern E2E testing for `chg-sf-doc-service` (EGG)**  
+> **Modern E2E testing for `chg-sf-doc-service` (EGG)**
 > Migrated from Java/Selenium/Serenity BDD to Playwright for improved reliability and performance.
 
 ## 📋 Table of Contents
@@ -11,10 +11,12 @@
 - [⚙️ Configuration](#️-configuration)
 - [🏃‍♂️ Running Tests](#️-running-tests)
 - [📁 Project Structure](#-project-structure)
-- [🔧 Advanced Usage](#-advanced-usage)
 - [📊 Reports & Debugging](#-reports--debugging)
 - [🤖 AI-Powered Testing](#-ai-powered-testing)
 - [🐛 Troubleshooting](#-troubleshooting)
+- [🚀 Contributing](#-contributing)
+
+---
 
 ## 🎯 Overview
 
@@ -30,6 +32,8 @@ This test suite provides comprehensive end-to-end testing for the DocUI applicat
 - 📊 **Page Object Model** - Maintainable and scalable test architecture
 - 🔌 **API Testing** - Direct HTTP testing via Playwright's built-in request client (no REST Assured needed)
 
+---
+
 ## ✅ Prerequisites
 
 Before getting started, ensure you have:
@@ -38,6 +42,8 @@ Before getting started, ensure you have:
 - [ ] **Access to mychg.okta.com** with valid credentials
 - [ ] **chg-sf-doc-service** repository cloned (for local development)
 - [ ] **VS Code** with GitHub Copilot (optional, for AI features)
+
+---
 
 ## 🚀 Quick Start
 
@@ -56,6 +62,7 @@ npx playwright install
 ```
 
 ### 2. Environment Setup
+
 ```bash
 # Copy environment template
 cp .env.example .env
@@ -64,8 +71,8 @@ cp .env.example .env
 nano .env  # or use your preferred editor
 ```
 
-> ⚠️ **Never commit `.env` to the repository.**  
-> It contains your personal Okta credentials and is already listed in `.gitignore`.  
+> ⚠️ **Never commit `.env` to the repository.**
+> It contains your personal Okta credentials and is already listed in `.gitignore`.
 > Each developer maintains their own local copy — only `.env.example` gets pushed to git.
 
 ### 3. Run Your First Test
@@ -74,6 +81,15 @@ nano .env  # or use your preferred editor
 # Run smoke tests
 npx playwright test tests/ui/smoke.spec.js --headed
 ```
+
+### How Authentication Works
+
+1. `global-setup.js` runs **once** before all tests
+2. It logs into Okta and saves the session to `.auth/session.json`
+3. Every test reuses that session — no login overhead per test
+4. If the session expires, just re-run the tests — it will re-authenticate automatically
+
+---
 
 ## ⚙️ Configuration
 
@@ -138,6 +154,8 @@ Set both to `false` when debugging, `true` for CI and normal runs.
 | **WBY** | Weatherby Healthcare |
 | **WMS** | WMS Solutions |
 
+---
+
 ## 🏃‍♂️ Running Tests
 
 ### Basic Test Execution
@@ -152,11 +170,31 @@ npx playwright test tests/ui/contentType.spec.js
 # Run tests in a specific folder
 npx playwright test tests/ui/
 
+# Run a specific spec file
+npx playwright test tests/ui/vq.spec.js
+
 # Run tests matching a pattern
 npx playwright test --grep "upload document"
-
 ```
+
+### Debug Mode
+
+```bash
+# Interactive debugging
+npx playwright test --debug
+
+# Headed mode (visible browser)
+npx playwright test --headed
+
+# Run a specific test by name in headed mode
+npx playwright test tests/ui/vq.spec.js --grep "Document with no request transferred to CT with no request" --headed
+
+# Slow motion for demo purposes
+npx playwright test --headed --slowMo=1000
+```
+
 ### API Test Execution
+
 ```bash
 # Run API tests (no browser required)
 npx playwright test --config=playwright.api.config.js
@@ -209,18 +247,47 @@ npx playwright test --project=webkit
 npx playwright test --project=chromium --project=firefox --project=webkit
 ```
 
-### Debug Mode
+### Custom Test Filters
 
 ```bash
-# Interactive debugging
-npx playwright test --debug
+# Run tests by tag
+npx playwright test --grep "@smoke"
+npx playwright test --grep "@regression"
 
-# Headed mode (visible browser)
-npx playwright test --headed
+# Exclude specific tests
+npx playwright test --grep-invert "@skip"
 
-# Slow motion for demo purposes
-npx playwright test --headed --slowMo=1000
+# Run tests in specific file pattern
+npx playwright test tests/**/*.smoke.spec.js
 ```
+
+### Parallel Execution
+
+```bash
+# Control number of workers
+npx playwright test --workers=4
+
+# Disable parallel execution
+npx playwright test --workers=1
+
+# Run tests in serial within files
+npx playwright test --fullyParallel=false
+```
+
+### Recording Tests
+
+```bash
+# Record a new test
+npx playwright codegen localhost:8081
+
+# Record against specific environment
+TEST_ENV=stage npx playwright codegen
+
+# Record with existing auth session (e.g. verification queue)
+npx playwright codegen --load-storage='.auth/cssuser.json' --ignore-https-errors 'https://localhost:8081/#/verification-queue?page=verification-queue&division=CHG'
+```
+
+---
 
 ## 📁 Project Structure
 
@@ -264,53 +331,19 @@ npx playwright test --headed --slowMo=1000
 │   ├── 📁 clients/
 │   │   ├── 📄 OktaClient.js              # Okta token retrieval
 │   │   └── 📄 DmsApiClient.js            # DMS GET/DELETE HTTP client
-│   └── 📄 ApiStepsV2.spec.js             # DELETE endpoint tests                          # UI tests
+│   └── 📄 ApiStepsV2.spec.js             # API endpoint tests
+├── 📁 tests/
+│   └── 📁 ui/                            # UI tests
 │       ├── 📄 smoke.spec.js
-│       └── 📄 contentType.spec.js
+│       ├── 📄 contentType.spec.js
+│       └── 📄 vq.spec.js
 ├── 📁 docs/
 │   └── 📄 MCP-AGENTS_SETUP.md           # AI testing guide
 └── 📁 .vscode/
     └── 📄 mcp.json                       # MCP server config
 ```
 
-## 🔧 Advanced Usage
-
-### Custom Test Filters
-
-```bash
-# Run tests by tag
-npx playwright test --grep "@smoke"
-npx playwright test --grep "@regression"
-
-# Exclude specific tests
-npx playwright test --grep-invert "@skip"
-
-# Run tests in specific file pattern
-npx playwright test tests/**/*.smoke.spec.js
-```
-
-### Parallel Execution
-
-```bash
-# Control number of workers
-npx playwright test --workers=4
-
-# Disable parallel execution
-npx playwright test --workers=1
-
-# Run tests in serial within files
-npx playwright test --fullyParallel=false
-```
-
-### Recording Tests
-
-```bash
-# Record a new test
-npx playwright codegen localhost:8081
-
-# Record against specific environment
-TEST_ENV=stage npx playwright codegen
-```
+---
 
 ## 📊 Reports & Debugging
 
@@ -346,6 +379,8 @@ By default, Playwright captures:
 
 Files are saved to `test-results/` and `playwright-report/` directories.
 
+---
+
 ## 🤖 AI-Powered Testing
 
 This project includes Playwright MCP agents for AI-assisted test creation and maintenance.
@@ -369,6 +404,8 @@ npx playwright init-agents --loop=vscode
 ```
 
 > 📖 **Detailed Guide:** See [docs/MCP-AGENTS_SETUP.md](docs/MCP-AGENTS_SETUP.md) for complete setup instructions.
+
+---
 
 ## 🐛 Troubleshooting
 
@@ -430,10 +467,3 @@ This project is part of CHG Healthcare's internal testing infrastructure.
 ---
 
 > **Happy Testing!** 🎭✨
-
-## How Authentication Works
-
-1. `global-setup.js` runs **once** before all tests
-2. It logs into Okta and saves the session to `.auth/session.json`
-3. Every test reuses that session — no login overhead per test
-4. If the session expires, just re-run the tests — it will re-authenticate automatically

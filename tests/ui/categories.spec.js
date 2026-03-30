@@ -13,7 +13,7 @@ const { PageEnum }            = require('../../test-data/enums/PageEnum');
 const { TestEntityIds }       = require('../../test-data/enums/TestEntityIds');
 
 const dmsApiClient = new DmsApiClient();
-const entityId     = TestEntityIds.DR_TEST_TEST_PROVIDER.entityId;
+const TEST_PROVIDER     = TestEntityIds.DR_TEST_TEST_PROVIDER.entityId;
 
 // ─────────────────────────────────────────────────────────────
 // Suite
@@ -23,14 +23,14 @@ test.describe('Categories', () => {
 
   test.beforeEach(async ({ homePage }) => {
     await homePage.openHomePage(
-      entityId,
+      TEST_PROVIDER,
       PageEnum.provider,
       Division.CHS
     );
   });
 
   test.afterEach(async () => {
-    await dmsApiClient.deleteAllDocumentsForEntity(entityId);
+    await dmsApiClient.deleteAllDocumentsForEntity(TEST_PROVIDER);
   });
 
   // ─────────────────────────────────────────────
