@@ -17,7 +17,7 @@ const config = {
   reporter: 'html',
 
   use: {
-    headless: false,
+    headless: true,
     baseURL: environment.baseURL,
     storageState: '.auth/session.json',
     ignoreHTTPSErrors: true, // fixes SSL cert error on localhost for all browsers

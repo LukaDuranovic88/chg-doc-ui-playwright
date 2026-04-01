@@ -60,6 +60,16 @@ class VerificationQueuePage extends BasePage {
 
   async open(division) {
     await this.page.goto(`/#/verification-queue?page=verification-queue&division=${division}`);
+
+    // Dismiss permission dialog if it appears (can show briefly on stage)
+    try {
+      const okBtn = this.page.getByRole('button', { name: 'OK' });
+      await okBtn.waitFor({ state: 'visible', timeout: 5000 });
+      await okBtn.click();
+    } catch {
+      // No dialog — continue
+    }
+
     await this.page.waitForLoadState('networkidle');
   }
 
