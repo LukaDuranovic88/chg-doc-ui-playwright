@@ -26,7 +26,6 @@ This test suite provides comprehensive end-to-end testing for the DocUI applicat
 
 - 🔐 **Okta SSO Integration** - Automated authentication flow
 - 🌍 **Multi-Environment Support** - local, feature, dev, stage, prod
-- 📱 **Cross-Browser Testing** - Chromium, Firefox, WebKit
 - 🎥 **Rich Reporting** - Screenshots, videos, traces on failure
 - 🤖 **AI Test Generation** - Playwright MCP agents for automated test creation
 - 📊 **Page Object Model** - Maintainable and scalable test architecture
@@ -78,16 +77,16 @@ nano .env  # or use your preferred editor
 ### 3. Run Your First Test
 
 ```bash
-# Run smoke tests
-npx playwright test tests/ui/smoke.spec.js --headed
+# Run all UI tests
+npx playwright test tests/ui/
 ```
 
 ### How Authentication Works
 
 1. `global-setup.js` runs **once** before all tests
-2. It logs into Okta and saves the session to `.auth/session.json`
-3. Every test reuses that session — no login overhead per test
-4. If the session expires, just re-run the tests — it will re-authenticate automatically
+2. It logs into Okta and saves the session to `.auth/session.json` (default user) and `.auth/cssuser.json` (VQ user)
+3. Every test reuses the appropriate session — no login overhead per test
+4. If the session expires, delete the relevant `.auth/*.json` file and re-run — `global-setup.js` will regenerate it
 
 ---
 
@@ -102,8 +101,14 @@ Create a `.env` file in the project root with the following configuration:
 # ENVIRONMENT CONFIGURATION
 # ===========================================
 TEST_ENV=local                              # Target environment
-TEST_USERNAME=your_email@chghealthcare.com  # Your Okta username
-TEST_PASSWORD=your_secure_password          # Your Okta password
+TEST_USERNAME=your_email@chghealthcare.com  # Your Okta username (default user)
+TEST_PASSWORD=your_secure_password          # Your Okta password (default user)
+
+# ===========================================
+# VQ USER (Verification Queue)
+# ===========================================
+VQ_CSS_USERNAME=cssuser_email@chghealthcare.com  # CSS user for VQ tests
+VQ_CSS_PASSWORD=cssuser_secure_password          # CSS user password
 
 # ===========================================
 # APPLICATION CONTEXT
@@ -111,12 +116,6 @@ TEST_PASSWORD=your_secure_password          # Your Okta password
 ENTITY_ID=003A000000pGqGo                  # Salesforce entity ID
 PAGE=provider                              # Application page context
 DIVISION=CHS                               # Business division
-
-# ===========================================
-# OPTIONAL SETTINGS
-# ===========================================
-TIMEOUT=30000                              # Default timeout in ms
-PARALLEL_WORKERS=2                         # Number of parallel test workers
 ```
 
 ### Headless Mode
@@ -144,15 +143,15 @@ Set both to `false` when debugging, `true` for CI and normal runs.
 
 | Code | Division Name |
 |------|---------------|
-| **CHS** | CHG Healthcare |
-| **CHG** | CompHealth |
-| **CAP** | Capabilities |
-| **CHA** | CHG Analytics |
-| **CHP** | CHG Partners |
-| **GMD** | Global Medical Data |
-| **GMI** | Global Medical Intelligence |
-| **WBY** | Weatherby Healthcare |
-| **WMS** | WMS Solutions |
+| **CHS** | 
+| **CHG** | 
+| **CAP** | 
+| **CHA** | 
+| **CHP** | 
+| **GMD** | 
+| **GMI** | 
+| **WBY** | 
+| **WMS** |
 
 ---
 
@@ -161,16 +160,12 @@ Set both to `false` when debugging, `true` for CI and normal runs.
 ### Basic Test Execution
 
 ```bash
-# Run all tests
-npx playwright test
+# Run all UI tests
+npx playwright test tests/ui/
 
 # Run specific test file
 npx playwright test tests/ui/contentType.spec.js
-
-# Run tests in a specific folder
-npx playwright test tests/ui/
-
-# Run a specific spec file
+npx playwright test tests/ui/categories.spec.js
 npx playwright test tests/ui/vq.spec.js
 
 # Run tests matching a pattern
@@ -234,18 +229,7 @@ TEST_ENV=prod npx playwright test
 ```
 
 > ⚠️ **Important:** Run each environment command separately. Never run multiple environments simultaneously.
-
-### Browser-Specific Testing
-
-```bash
-# Run on specific browser
-npx playwright test --project=chromium
-npx playwright test --project=firefox
-npx playwright test --project=webkit
-
-# Run on all browsers
-npx playwright test --project=chromium --project=firefox --project=webkit
-```
+> CI always targets `stage`. Never set `TEST_ENV=prod` in automated or CI runs.
 
 ### Custom Test Filters
 
@@ -256,9 +240,6 @@ npx playwright test --grep "@regression"
 
 # Exclude specific tests
 npx playwright test --grep-invert "@skip"
-
-# Run tests in specific file pattern
-npx playwright test tests/**/*.smoke.spec.js
 ```
 
 ### Parallel Execution
@@ -269,9 +250,6 @@ npx playwright test --workers=4
 
 # Disable parallel execution
 npx playwright test --workers=1
-
-# Run tests in serial within files
-npx playwright test --fullyParallel=false
 ```
 
 ### Recording Tests
@@ -294,54 +272,59 @@ npx playwright codegen --load-storage='.auth/cssuser.json' --ignore-https-errors
 ```
 📁 chg-doc-ui-playwright/
 ├── 📄 README.md                          # This file
+├── 📄 CLAUDE.md                          # AI constraint rules (Claude/Copilot) — not a human doc
+├── 📄 ARCHITECTURE.md                    # Framework architecture and file responsibilities
 ├── 📄 package.json                       # Dependencies and scripts
-├── 📄 playwright.config.js               # Playwright configuration
-├── 📄 global-setup.js                    # One-time Okta authentication
+├── 📄 playwright.config.js               # UI test config (Chromium only)
+├── 📄 playwright.api.config.js           # API-only config — no browser
+├── 📄 global-setup.js                    # One-time Okta authentication (two users)
 ├── 📄 .env.example                       # Environment template
 ├── 📁 config/
-│   └── 📄 environments.js                # Environment URL configurations
+│   └── 📄 environments.js                # Base URLs per environment
 ├── 📁 pages/                             # Page Object Models
-│   ├── 📄 BasePage.js                    # Base page class
+│   ├── 📄 BasePage.js                    # Base class — all page objects extend this
 │   ├── 📄 HomePage.js                    # Home page interactions
+│   ├── 📄 CategoryComponent.js           # Collapsible category table component
+│   ├── 📄 VerificationQueuePage.js       # VQ filtering, sorting, review actions
 │   └── 📁 modals/
-│       └── 📄 UploadModal.js             # Upload modal interactions
+│       ├── 📄 BaseModal.js               # All metadata field locators + submit logic
+│       ├── 📄 UploadModal.js             # Extends BaseModal — file upload
+│       └── 📄 RequestModal.js            # Extends BaseModal — document request
 ├── 📁 fixtures/
-│   └── 📄 base.fixture.js                # Custom test fixtures
+│   └── 📄 base.fixture.js                # All fixtures — import test/expect from here
 ├── 📁 helpers/
-│   └── 📄 apiClient.js                   # API utilities
-├── 📁 test-data/
-│   └── 📁 enums/                         # Migrated from Java/Serenity enums
-│       ├── 📄 Audited.js
-│       ├── 📄 Categories.js
-│       ├── 📄 Classification.js
-│       ├── 📄 ContentTypes.js
-│       ├── 📄 Division.js
-│       ├── 📄 DocumentColumns.js
-│       ├── 📄 DocumentStatus.js
-│       ├── 📄 MetadataFields.js
-│       ├── 📄 PageEnum.js
-│       ├── 📄 Signed.js
-│       ├── 📄 Specialty.js
-│       ├── 📄 State.js
-│       ├── 📄 SubCategory.js
-│       ├── 📄 TestEntityIds.js
-│       ├── 📄 TestMultiEntityIds.js
-│       └── 📄 VQFilter.js
-├── 📁 api/                               # API test clients and specs
+│   └── 📄 documentActions.js             # Multi-page workflow helpers (upload, request, uploadToRequest)
+├── 📁 api/
 │   ├── 📁 clients/
-│   │   ├── 📄 OktaClient.js              # Okta token retrieval
-│   │   └── 📄 DmsApiClient.js            # DMS GET/DELETE HTTP client
-│   └── 📄 ApiStepsV2.spec.js             # API endpoint tests
+│   │   ├── 📄 OktaClient.js              # Okta OAuth2 token fetcher — used by DmsApiClient only
+│   │   └── 📄 DmsApiClient.js            # All DMS HTTP calls — only file allowed to make HTTP requests
+│   └── 📄 ApiStepsV2.spec.js             # API-only test suite
+├── 📁 test-data/
+│   ├── 📁 enums/                         # 21 enum files — one concern per file, no cross-imports
+│   │   ├── 📄 ContentTypes.js            # All content types with required/optional field definitions
+│   │   ├── 📄 TestEntityIds.js           # All Salesforce entity IDs used in tests
+│   │   ├── 📄 VQFilter.js                # VQ filter type keys
+│   │   ├── 📄 Division.js                # Division codes
+│   │   ├── 📄 Categories.js              # Category names
+│   │   └── 📄 ...                        # Supporting enums (states, subcategories, etc.)
+│   └── 📁 test-files/
+│       ├── 📄 test.pdf                   # Standard upload file
+│       └── 📁 corrupted-files/           # DM-1933 error testing only
 ├── 📁 tests/
-│   └── 📁 ui/                            # UI tests
-│       ├── 📄 smoke.spec.js
-│       ├── 📄 contentType.spec.js
-│       └── 📄 vq.spec.js
+│   ├── 📁 ui/
+│   │   ├── 📄 categories.spec.js         # 25 tests — upload/request/uploadToRequest across categories
+│   │   ├── 📄 contentType.spec.js        # 14 tests — content type metadata smoke
+│   │   └── 📄 vq.spec.js                 # 18 tests — VQ workflows
+│   └── 📁 api/
+│       └── 📄 users.api.spec.js          # 🚧 Stub — do not add tests without a ticket
 ├── 📁 docs/
-│   └── 📄 MCP-AGENTS_SETUP.md           # AI testing guide
+│   ├── 📄 API-TESTING-SETUP.md           # API testing guide
+│   └── 📄 MCP-AGENTS_SETUP.md           # AI test generation guide
 └── 📁 .vscode/
     └── 📄 mcp.json                       # MCP server config
 ```
+
+> 📖 For detailed file responsibilities and architectural rules, see [ARCHITECTURE.md](ARCHITECTURE.md).
 
 ---
 
@@ -393,16 +376,6 @@ This project includes Playwright MCP agents for AI-assisted test creation and ma
 | ⚡ `@playwright-test-generator` | Generate tests from plans |
 | 🔧 `@playwright-test-healer` | Fix failing tests automatically |
 
-### Quick Setup
-
-```bash
-# Install MCP packages (already included)
-npm install @playwright/mcp playwright-mcp-server
-
-# Initialize agents
-npx playwright init-agents --loop=vscode
-```
-
 > 📖 **Detailed Guide:** See [docs/MCP-AGENTS_SETUP.md](docs/MCP-AGENTS_SETUP.md) for complete setup instructions.
 
 ---
@@ -413,9 +386,9 @@ npx playwright init-agents --loop=vscode
 
 | Issue | Solution |
 |-------|----------|
-| **"Timeout waiting for element"** | Increase timeout in `playwright.config.js` or use `waitFor()` |
-| **"Authentication failed"** | Verify credentials in `.env` and check Okta access |
-| **"Service not running"** | Start local service with correct IntelliJ script |
+| **"Timeout waiting for element"** | Use `waitFor()`, `waitForLoadState()`, or expect-based polling — never increase `retries` to mask flakiness |
+| **"Authentication failed"** | Verify credentials in `.env` and check Okta access. Delete `.auth/*.json` and re-run to regenerate sessions |
+| **"Service not running"** | Start local service with correct IntelliJ script for your `TEST_ENV` |
 | **"Browser not found"** | Run `npx playwright install` |
 | **"Port already in use"** | Stop existing local services or change port configuration |
 
@@ -423,32 +396,28 @@ npx playwright init-agents --loop=vscode
 
 1. **Check Environment Configuration**
    ```bash
-   # Verify .env file exists and has correct values
    cat .env
    ```
 
 2. **Verify Service Status**
    ```bash
-   # Check if local service is running
    curl http://localhost:8081/health
    ```
 
 3. **Run with Verbose Logging**
    ```bash
-   # Enable debug output
    DEBUG=pw:api npx playwright test
    ```
 
-4. **Test Authentication**
+4. **Regenerate Auth Sessions**
    ```bash
-   # Run auth setup only
-   npx playwright test global-setup.js
+   rm .auth/*.json && npx playwright test
    ```
 
 ### Getting Help
 
 - 📖 **Playwright Docs:** [playwright.dev](https://playwright.dev)
-- 🎭 **Project Issues:** [Report bugs or request features]
+- 📐 **Framework Architecture:** [ARCHITECTURE.md](ARCHITECTURE.md)
 - 💬 **Team Chat:** Contact the QA team for assistance
 
 ---
@@ -458,7 +427,8 @@ npx playwright init-agents --loop=vscode
 1. **Feature Branches:** Create feature branches from `main`
 2. **Test Coverage:** Ensure new features include corresponding tests
 3. **Code Review:** All changes require peer review
-4. **Documentation:** Update README when adding new features
+4. **Documentation:** Update `README.md` and `ARCHITECTURE.md` when adding new files or patterns
+5. **AI Constraints:** Review `CLAUDE.md` before making structural changes — it governs what Claude and Copilot are allowed to do in this repo
 
 ## 📝 License
 

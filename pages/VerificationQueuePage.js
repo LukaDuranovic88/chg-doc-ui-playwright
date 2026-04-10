@@ -237,7 +237,6 @@ class VerificationQueuePage extends BasePage {
 
   async clickTransferWithRequest() {
     await this.transferWithRequestBtn.click();
-    await this.transferWithRequestBtn.click();
     await this.unselectedTransferRequest.click();
   }
 

@@ -1,3 +1,4 @@
+const { expect } = require('@playwright/test');
 const { DocumentStatus } = require('../test-data/enums/DocumentStatus');
 
 // ─────────────────────────────────────────────────────────────
