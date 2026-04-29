@@ -161,7 +161,6 @@ class VerificationQueuePage extends BasePage {
     await this.sortByColumn('Uploaded Date', 'descending');
     await this.editButton.click();
     await this.reviewPanel.waitFor({ state: 'visible' });
-    await this.page.waitForLoadState('networkidle');
   }
 
   async filterAndEditLatestWithError(division, team, specialty, contentType) {

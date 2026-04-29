@@ -1,4 +1,4 @@
-const { Pages }                    = require('../enums/Pages');
+const { PageEnum: Pages }          = require('../enums/PageEnum');
 const { Division: D, ALL_DIVISIONS } = require('../enums/Division');
 const { Categories }               = require('../enums/Categories');
 const { Lifecycles }               = require('../enums/Lifecycles');
@@ -81,6 +81,12 @@ const getLifecycle = (contentType) => contentType.lifecycle;
  */
 const getCategory = (contentType) => contentType.category;
 
+/**
+ * All content types visible in the Verification Queue (CHG division only).
+ * @returns {object[]}
+ */
+const getVqContentTypes = () => _ALL_CTS.filter((ct) => ct.vqVisible);
+
 module.exports = {
   getContentTypes,
   getContentTypesByCategory,
@@ -88,4 +94,5 @@ module.exports = {
   getPagesForContentType,
   getLifecycle,
   getCategory,
+  getVqContentTypes,
 };

@@ -1,7 +1,7 @@
 const { Categories }        = require('./Categories');
 const { Lifecycles }        = require('./Lifecycles');
 const { MetadataFields: M } = require('./MetadataFields');
-const { Pages }             = require('./Pages');
+const { PageEnum: Pages }   = require('./PageEnum');
 const { Division: D }       = require('./Division');
 
 // ─────────────────────────────────────────────
@@ -17,6 +17,7 @@ const { Division: D }       = require('./Division');
 //                             omit a page key = not visible on that page
 //   required     {string[]} — required metadata fields
 //   optional     {string[]} — optional metadata fields
+//   vqVisible    {boolean}  — true if visible in the Verification Queue (CHG division only)
 //
 // Source of truth for access rules:
 //   https://chghealthcare.atlassian.net/wiki/spaces/IGP/pages/2554593283
@@ -33,8 +34,9 @@ const ContentTypeNames = {
     access: {
       [Pages.provider]: [D.ALL],
     },
-    required: [],
-    optional: [],
+    required:  [],
+    optional:  [],
+    vqVisible: true,
   },
   CVSupportDocuments: {
     displayName: 'CV Support Documents',
@@ -44,8 +46,9 @@ const ContentTypeNames = {
     access: {
       [Pages.provider]: [D.ALL],
     },
-    required: [],
-    optional: [],
+    required:  [],
+    optional:  [],
+    vqVisible: true,
   },
 
   // ── Client Uploaded Documents ─────────────────────────────────────────
@@ -55,8 +58,9 @@ const ContentTypeNames = {
     category:    Categories.ClientUploadedDocuments,
     lifecycle:   Lifecycles.Default,
     access: {},
-    required: [],
-    optional: [],
+    required:  [],
+    optional:  [],
+    vqVisible: false,
   },
   LocumsMartOther: {
     displayName: 'LocumsMart Other',
@@ -64,8 +68,9 @@ const ContentTypeNames = {
     category:    Categories.ClientUploadedDocuments,
     lifecycle:   Lifecycles.Default,
     access: {},
-    required: [],
-    optional: [],
+    required:  [],
+    optional:  [],
+    vqVisible: false,
   },
 
   // ── Proof of Identity ─────────────────────────────────────────────────
@@ -77,8 +82,9 @@ const ContentTypeNames = {
     access: {
       [Pages.provider]: [D.ALL],
     },
-    required: [],
-    optional: [],
+    required:  [],
+    optional:  [],
+    vqVisible: true,
   },
   CertificateOfNaturalization: {
     displayName: 'Certificate of Naturalization',
@@ -88,8 +94,9 @@ const ContentTypeNames = {
     access: {
       [Pages.provider]: [D.ALL],
     },
-    required: [],
-    optional: [M.IssueDate],
+    required:  [],
+    optional:  [M.IssueDate],
+    vqVisible: true,
   },
   DriversLicense: {
     displayName: "Driver's License/State Issued Identification",
@@ -99,8 +106,9 @@ const ContentTypeNames = {
     access: {
       [Pages.provider]: [D.ALL],
     },
-    required: [],
-    optional: [M.ExpirationDate, M.IssueDate, M.IssuingAuthority],
+    required:  [],
+    optional:  [M.ExpirationDate, M.IssueDate, M.IssuingAuthority],
+    vqVisible: true,
   },
   EmploymentAuthorizationCardVisa: {
     displayName: 'Employment Authorization Card / VISA',
@@ -110,8 +118,9 @@ const ContentTypeNames = {
     access: {
       [Pages.provider]: [D.ALL],
     },
-    required: [],
-    optional: [M.ExpirationDate, M.IssueDate],
+    required:  [],
+    optional:  [M.ExpirationDate, M.IssueDate],
+    vqVisible: true,
   },
   NationalProviderIdentifier: {
     displayName: 'National Provider Identifier (NPI)',
@@ -121,8 +130,9 @@ const ContentTypeNames = {
     access: {
       [Pages.provider]: [D.ALL],
     },
-    required: [],
-    optional: [M.ClientID, M.PresentID, M.JobID, M.AssignmentID, M.AssignmentStartDate, M.AssignmentEndDate, M.DateOfLetter, M.DateSigned, M.ExpirationDate, M.IssueDate, M.ResultsDate, M.State],
+    required:  [],
+    optional:  [M.ClientID, M.PresentID, M.JobID, M.AssignmentID, M.AssignmentStartDate, M.AssignmentEndDate, M.DateOfLetter, M.DateSigned, M.ExpirationDate, M.IssueDate, M.ResultsDate, M.State],
+    vqVisible: true,
   },
   Passport: {
     displayName: 'Passport',
@@ -132,8 +142,9 @@ const ContentTypeNames = {
     access: {
       [Pages.provider]: [D.ALL],
     },
-    required: [],
-    optional: [M.ExpirationDate, M.IssueDate],
+    required:  [],
+    optional:  [M.ExpirationDate, M.IssueDate],
+    vqVisible: true,
   },
   ProfessionalPhoto: {
     displayName: 'Professional Photo',
@@ -143,8 +154,9 @@ const ContentTypeNames = {
     access: {
       [Pages.provider]: [D.ALL],
     },
-    required: [],
-    optional: [],
+    required:  [],
+    optional:  [],
+    vqVisible: true,
   },
   SocialSecurityCard: {
     displayName: 'Social Security Card',
@@ -154,8 +166,9 @@ const ContentTypeNames = {
     access: {
       [Pages.provider]: [D.ALL],
     },
-    required: [],
-    optional: [],
+    required:  [],
+    optional:  [],
+    vqVisible: true,
   },
   ProofOfIdentitySupportDocuments: {
     displayName: 'Proof of Identity Support Documents',
@@ -165,8 +178,9 @@ const ContentTypeNames = {
     access: {
       [Pages.provider]: [D.ALL],
     },
-    required: [],
-    optional: [],
+    required:  [],
+    optional:  [],
+    vqVisible: true,
   },
 
   // ── Education, Training, Certifications ──────────────────────────────
@@ -178,8 +192,9 @@ const ContentTypeNames = {
     access: {
       [Pages.provider]: [D.WBY, D.CHS, D.WMS, D.GMI, D.GMD, D.CHA],
     },
-    required: [M.SubCategory],
-    optional: [M.Specialty, M.DateTo, M.DateFrom, M.ExpirationDate, M.IssueDate, M.ResultsDate],
+    required:  [M.SubCategory],
+    optional:  [M.Specialty, M.DateTo, M.DateFrom, M.ExpirationDate, M.IssueDate, M.ResultsDate],
+    vqVisible: true,
   },
   EducationTrainingSupportDocuments: {
     displayName: 'Education and Training Support Documents',
@@ -189,8 +204,9 @@ const ContentTypeNames = {
     access: {
       [Pages.provider]: [D.ALL],
     },
-    required: [],
-    optional: [],
+    required:  [],
+    optional:  [],
+    vqVisible: true,
   },
   BoardCertificationSecondary: {
     displayName: 'Board Certification - Secondary',
@@ -200,8 +216,9 @@ const ContentTypeNames = {
     access: {
       [Pages.provider]: [D.WBY, D.CHS, D.WMS, D.GMI, D.GMD, D.CHA],
     },
-    required: [M.Classification],
-    optional: [M.ExpirationDate, M.IssueDate],
+    required:  [M.Classification],
+    optional:  [M.ExpirationDate, M.IssueDate],
+    vqVisible: true,
   },
   ChildAbuseCertification: {
     displayName: 'Child Abuse Certification',
@@ -211,8 +228,9 @@ const ContentTypeNames = {
     access: {
       [Pages.provider]: [D.WBY, D.CHS, D.WMS, D.CHA, D.GMI, D.GMD],
     },
-    required: [],
-    optional: [M.DateOfLetter, M.DateSigned, M.ExpirationDate, M.IssueDate, M.ResultsDate],
+    required:  [],
+    optional:  [M.DateOfLetter, M.DateSigned, M.ExpirationDate, M.IssueDate, M.ResultsDate],
+    vqVisible: true,
   },
   MembershipToProfessionalSociety: {
     displayName: 'Membership to Professional Society',
@@ -222,8 +240,9 @@ const ContentTypeNames = {
     access: {
       [Pages.provider]: [D.WBY, D.CHS, D.WMS, D.GMI, D.GMD, D.CHA],
     },
-    required: [],
-    optional: [M.ExpirationDate, M.IssueDate],
+    required:  [],
+    optional:  [M.ExpirationDate, M.IssueDate],
+    vqVisible: true,
   },
   InfectionControlCertificate: {
     displayName: 'Infection Control Certificate',
@@ -233,8 +252,9 @@ const ContentTypeNames = {
     access: {
       [Pages.provider]: [D.WBY, D.WMS, D.GMI, D.GMD],
     },
-    required: [],
-    optional: [M.ExpirationDate, M.IssueDate],
+    required:  [],
+    optional:  [M.ExpirationDate, M.IssueDate],
+    vqVisible: true,
   },
   HarassmentTrainingCertificate: {
     displayName: 'Harassment Training Certificate',
@@ -244,8 +264,9 @@ const ContentTypeNames = {
     access: {
       [Pages.provider]: [D.WBY, D.WMS, D.CHA, D.GMI, D.GMD, D.CHS],
     },
-    required: [],
-    optional: [M.EffectiveDate],
+    required:  [],
+    optional:  [M.EffectiveDate],
+    vqVisible: true,
   },
   ContinuingMedicalEducationCME: {
     displayName: 'Continuing Medical Education (CME)',
@@ -255,8 +276,9 @@ const ContentTypeNames = {
     access: {
       [Pages.provider]: [D.WBY, D.CHS, D.WMS, D.GMI, D.GMD, D.CHA],
     },
-    required: [],
-    optional: [M.IssueDate],
+    required:  [],
+    optional:  [M.IssueDate],
+    vqVisible: true,
   },
   APNationalCertificate: {
     displayName: 'AP National Certificate',
@@ -264,8 +286,9 @@ const ContentTypeNames = {
     category:    Categories.EducationTrainingCertifications,
     lifecycle:   Lifecycles.ProviderProcessDriven,
     access: {},   // not listed on any page in Confluence — confirm with team
-    required: [],
-    optional: [M.EffectiveDate, M.ExpirationDate],
+    required:  [],
+    optional:  [M.EffectiveDate, M.ExpirationDate],
+    vqVisible: true,
   },
   LifeSupportAndMiscCertifications: {
     displayName: 'Life Support and Misc. Certifications',
@@ -275,8 +298,9 @@ const ContentTypeNames = {
     access: {
       [Pages.provider]: [D.WBY, D.CHS, D.WMS, D.GMI, D.GMD, D.CHA],
     },
-    required: [M.SubCategory],
-    optional: [M.ExpirationDate, M.IssueDate],
+    required:  [M.SubCategory],
+    optional:  [M.ExpirationDate, M.IssueDate],
+    vqVisible: true,
   },
 
   // ── Health Records and Employment Screening ───────────────────────────
@@ -288,8 +312,9 @@ const ContentTypeNames = {
     access: {
       [Pages.provider]: [D.WBY, D.CHS, D.WMS, D.CHA],
     },
-    required: [],
-    optional: [M.SignatureDate],
+    required:  [],
+    optional:  [M.SignatureDate],
+    vqVisible: true,
   },
   AHCAfingerprintResults: {
     displayName: 'AHCA Fingerprint Results',
@@ -299,8 +324,9 @@ const ContentTypeNames = {
     access: {
       [Pages.provider]: [D.WBY, D.CHS, D.WMS, D.GMI, D.GMD],
     },
-    required: [],
-    optional: [],
+    required:  [],
+    optional:  [],
+    vqVisible: true,
   },
   DrugTestDocumentation: {
     displayName: 'Drug Test Documentation',
@@ -310,8 +336,9 @@ const ContentTypeNames = {
     access: {
       [Pages.provider]: [D.WBY, D.CHS, D.WMS, D.GMI, D.GMD, D.CHA],
     },
-    required: [],
-    optional: [M.ExpirationDate, M.ResultsDate],
+    required:  [],
+    optional:  [M.ExpirationDate, M.ResultsDate],
+    vqVisible: true,
   },
   EmploymentVerification: {
     displayName: 'Employment Verification',
@@ -321,8 +348,9 @@ const ContentTypeNames = {
     access: {
       [Pages.provider]: [D.WBY, D.CHS, D.WMS, D.GMI, D.GMD],
     },
-    required: [],
-    optional: [M.ClientID, M.PresentID, M.JobID, M.AssignmentID, M.AssignmentStartDate, M.AssignmentEndDate, M.DateOfLetter, M.DateSigned, M.ExpirationDate, M.IssueDate, M.ResultsDate, M.State],
+    required:  [],
+    optional:  [M.ClientID, M.PresentID, M.JobID, M.AssignmentID, M.AssignmentStartDate, M.AssignmentEndDate, M.DateOfLetter, M.DateSigned, M.ExpirationDate, M.IssueDate, M.ResultsDate, M.State],
+    vqVisible: true,
   },
   HealthScreeningTestingAndTiters: {
     displayName: 'Health Screening/Testing & Titers',
@@ -332,8 +360,9 @@ const ContentTypeNames = {
     access: {
       [Pages.provider]: [D.WBY, D.CHS, D.WMS, D.GMI, D.GMD],
     },
-    required: [M.Classification],
-    optional: [M.ExpirationDate, M.ResultsDate],
+    required:  [M.Classification],
+    optional:  [M.ExpirationDate, M.ResultsDate],
+    vqVisible: true,
   },
   ImmunizationVaccinationRecords: {
     displayName: 'Immunization/Vaccination Records',
@@ -343,8 +372,9 @@ const ContentTypeNames = {
     access: {
       [Pages.provider]: [D.WBY, D.CHS, D.WMS, D.GMI, D.GMD, D.CHA],
     },
-    required: [M.Classification],
-    optional: [M.DateSigned, M.ExpirationDate, M.ResultsDate],
+    required:  [M.Classification],
+    optional:  [M.DateSigned, M.ExpirationDate, M.ResultsDate],
+    vqVisible: true,
   },
   ProviderHealthStatementMedicalClearance: {
     displayName: 'Provider Health Statement / Medical Clearance',
@@ -354,8 +384,9 @@ const ContentTypeNames = {
     access: {
       [Pages.provider]: [D.WBY, D.CHS, D.WMS, D.GMI, D.GMD],
     },
-    required: [],
-    optional: [M.ResultsDate, M.ExpirationDate],
+    required:  [],
+    optional:  [M.ResultsDate, M.ExpirationDate],
+    vqVisible: true,
   },
   CHGCOVIDExemptionLetter: {
     displayName: 'CHG COVID Exemption Letter',
@@ -365,8 +396,9 @@ const ContentTypeNames = {
     access: {
       [Pages.provider]: [D.CHS, D.WBY, D.WMS, D.CHA, D.GMI, D.GMD],
     },
-    required: [],
-    optional: [M.IssueDate, M.ExpirationDate, M.DateOfLetter, M.DateSigned],
+    required:  [],
+    optional:  [M.IssueDate, M.ExpirationDate, M.DateOfLetter, M.DateSigned],
+    vqVisible: true,
   },
   ColorVision: {
     displayName: 'Color Vision',
@@ -376,8 +408,9 @@ const ContentTypeNames = {
     access: {
       [Pages.provider]: [D.WBY, D.CHS, D.WMS, D.GMI, D.GMD, D.CHA],
     },
-    required: [],
-    optional: [M.ExpirationDate, M.ExamScore],
+    required:  [],
+    optional:  [M.ExpirationDate, M.ExamScore],
+    vqVisible: true,
   },
 
   // ── Professional Licensure ────────────────────────────────────────────
@@ -389,8 +422,9 @@ const ContentTypeNames = {
     access: {
       [Pages.provider]: [D.WBY, D.CHS, D.WMS, D.GMI, D.GMD, D.CHA],
     },
-    required: [M.SubCategory, M.State],
-    optional: [M.ExpirationDate, M.IssueDate],
+    required:  [M.SubCategory, M.State],
+    optional:  [M.ExpirationDate, M.IssueDate],
+    vqVisible: true,
   },
   LicensingExams: {
     displayName: 'Licensing Exams',
@@ -400,8 +434,9 @@ const ContentTypeNames = {
     access: {
       [Pages.provider]: [D.WBY, D.CHS, D.WMS, D.GMI, D.GMD, D.CHA],
     },
-    required: [M.SubCategory],
-    optional: [M.IssueDate],
+    required:  [M.SubCategory],
+    optional:  [M.IssueDate],
+    vqVisible: true,
   },
   LicensureSupportDocuments: {
     displayName: 'Licensure Support Documents',
@@ -411,8 +446,9 @@ const ContentTypeNames = {
     access: {
       [Pages.provider]: [D.WBY, D.CHS, D.WMS, D.GMI, D.GMD, D.CHA, D.CHP, D.CAP],
     },
-    required: [],
-    optional: [],
+    required:  [],
+    optional:  [],
+    vqVisible: true,
   },
   StateControlledSubstanceRegistrationSecondary: {
     displayName: 'State Controlled Substance Registration - Secondary',
@@ -422,8 +458,9 @@ const ContentTypeNames = {
     access: {
       [Pages.provider]: [D.WBY, D.CHS, D.WMS, D.GMI, D.GMD, D.CHA],
     },
-    required: [M.State],
-    optional: [M.IssueDate, M.ExpirationDate],
+    required:  [M.State],
+    optional:  [M.IssueDate, M.ExpirationDate],
+    vqVisible: true,
   },
   StateLicensureCopy: {
     displayName: 'State Licensure - Copy',
@@ -433,8 +470,9 @@ const ContentTypeNames = {
     access: {
       [Pages.provider]: [D.WBY, D.CHS, D.WMS, D.GMI, D.GMD, D.CHA],
     },
-    required: [M.State],
-    optional: [M.ExpirationDate, M.IssueDate],
+    required:  [M.State],
+    optional:  [M.ExpirationDate, M.IssueDate],
+    vqVisible: true,
   },
 
   // ── Provider Internal Credentialing ──────────────────────────────────
@@ -446,8 +484,9 @@ const ContentTypeNames = {
     access: {
       [Pages.provider]: [D.WBY, D.WMS, D.CHS, D.CHP, D.CAP, D.GMI, D.GMD],
     },
-    required: [],
-    optional: [M.ExpirationDate],
+    required:  [],
+    optional:  [M.ExpirationDate],
+    vqVisible: true,
   },
   AuthorizationAndRelease: {
     displayName: 'Authorization & Release',
@@ -457,8 +496,9 @@ const ContentTypeNames = {
     access: {
       [Pages.provider]: [D.WBY, D.CHS, D.WMS, D.GMI, D.GMD, D.CHA],
     },
-    required: [],
-    optional: [M.DateSigned, M.ExpirationDate],
+    required:  [],
+    optional:  [M.DateSigned, M.ExpirationDate],
+    vqVisible: true,
   },
   AnnualPerformanceReview: {
     displayName: 'Annual Performance Review',
@@ -468,8 +508,9 @@ const ContentTypeNames = {
     access: {
       [Pages.provider]: [D.WMS, D.CHA],
     },
-    required: [],
-    optional: [],
+    required:  [],
+    optional:  [],
+    vqVisible: true,
   },
   CHACredentialingApprovalLetter: {
     displayName: 'CHA Credentialing Approval Letter',
@@ -479,8 +520,9 @@ const ContentTypeNames = {
     access: {
       [Pages.provider]: [D.CHA],
     },
-    required: [],
-    optional: [M.DateSigned, M.DateOfLetter, M.ExpirationDate, M.IssueDate],
+    required:  [],
+    optional:  [M.DateSigned, M.DateOfLetter, M.ExpirationDate, M.IssueDate],
+    vqVisible: true,
   },
   ClinicalCapabilities: {
     displayName: 'Clinical Capabilities',
@@ -490,8 +532,9 @@ const ContentTypeNames = {
     access: {
       [Pages.provider]: [D.WBY, D.CHS, D.WMS, D.GMI, D.GMD, D.CHA],
     },
-    required: [],
-    optional: [M.ExpirationDate, M.CompletedDate],
+    required:  [],
+    optional:  [M.ExpirationDate, M.CompletedDate],
+    vqVisible: true,
   },
   CompetencyTest: {
     displayName: 'Competency Test',
@@ -501,8 +544,9 @@ const ContentTypeNames = {
     access: {
       [Pages.provider]: [D.CHA],
     },
-    required: [],
-    optional: [M.CompletedDate, M.ExpirationDate],
+    required:  [],
+    optional:  [M.CompletedDate, M.ExpirationDate],
+    vqVisible: true,
   },
   CredentialingProfileDelegated: {
     displayName: 'Credentialing Profile - Delegated',
@@ -512,8 +556,9 @@ const ContentTypeNames = {
     access: {
       [Pages.provider]: [D.CHS, D.WBY, D.WMS, D.GMI, D.GMD],
     },
-    required: [],
-    optional: [M.ExpirationDate],
+    required:  [],
+    optional:  [M.ExpirationDate],
+    vqVisible: true,
   },
   CredentialingSupportDocuments: {
     displayName: 'Credentialing Support Documents',
@@ -523,8 +568,9 @@ const ContentTypeNames = {
     access: {
       [Pages.provider]: [D.ALL],
     },
-    required: [],
-    optional: [],
+    required:  [],
+    optional:  [],
+    vqVisible: true,
   },
   CredentialingVerifyingOfficeCVOQuery: {
     displayName: 'Credentialing Verifying Office (CVO) Query',
@@ -534,8 +580,9 @@ const ContentTypeNames = {
     access: {
       [Pages.provider]: [D.WBY, D.CHS, D.WMS, D.GMI, D.GMD, D.CHA],
     },
-    required: [],
-    optional: [M.ExpirationDate, M.ApprovalDate, M.ResultsDate],
+    required:  [],
+    optional:  [M.ExpirationDate, M.ApprovalDate, M.ResultsDate],
+    vqVisible: true,
   },
   CriminalBackgroundCheckResults: {
     displayName: 'Criminal Background Check Results',
@@ -545,8 +592,9 @@ const ContentTypeNames = {
     access: {
       [Pages.provider]: [D.WBY, D.CHS, D.WMS, D.GMI, D.GMD, D.CHA],
     },
-    required: [],
-    optional: [M.ReportCompletionDate, M.State],
+    required:  [],
+    optional:  [M.ReportCompletionDate, M.State],
+    vqVisible: true,
   },
   CriminalBackgroundRelease: {
     displayName: 'Criminal Background Release',
@@ -556,8 +604,9 @@ const ContentTypeNames = {
     access: {
       [Pages.provider]: [D.WBY, D.CHS, D.WMS, D.GMI, D.GMD, D.CHA],
     },
-    required: [],
-    optional: [M.DateSigned, M.ExpirationDate],
+    required:  [],
+    optional:  [M.DateSigned, M.ExpirationDate],
+    vqVisible: true,
   },
   CriminalHistoryQuestionnaire: {
     displayName: 'Criminal History Questionnaire',
@@ -567,8 +616,9 @@ const ContentTypeNames = {
     access: {
       [Pages.provider]: [D.WBY, D.WMS, D.CHA],
     },
-    required: [],
-    optional: [M.ExpirationDate, M.ResultsDate],
+    required:  [],
+    optional:  [M.ExpirationDate, M.ResultsDate],
+    vqVisible: true,
   },
   Explanation: {
     displayName: 'Explanation',
@@ -578,8 +628,9 @@ const ContentTypeNames = {
     access: {
       [Pages.provider]: [D.ALL],
     },
-    required: [M.DateOfLetter],
-    optional: [],
+    required:  [M.DateOfLetter],
+    optional:  [],
+    vqVisible: true,
   },
   FOXSkills: {
     displayName: 'FOX Skills',
@@ -589,8 +640,9 @@ const ContentTypeNames = {
     access: {
       [Pages.provider]: [D.ALL],
     },
-    required: [],
-    optional: [],
+    required:  [],
+    optional:  [],
+    vqVisible: true,
   },
   GeneralServicesAdministrationGSA: {
     displayName: 'General Services Administration (GSA)',
@@ -600,8 +652,9 @@ const ContentTypeNames = {
     access: {
       [Pages.provider]: [D.CHA],
     },
-    required: [],
-    optional: [M.ExpirationDate],
+    required:  [],
+    optional:  [M.ExpirationDate],
+    vqVisible: true,
   },
   GMSApprovalInternationalOnly: {
     displayName: 'GMS Approval- International Only',
@@ -611,8 +664,9 @@ const ContentTypeNames = {
     access: {
       [Pages.provider]: [D.GMI, D.GMD],
     },
-    required: [],
-    optional: [M.ApprovalDate, M.ExpirationDate],
+    required:  [],
+    optional:  [M.ApprovalDate, M.ExpirationDate],
+    vqVisible: true,
   },
   HospitalPrivilegeVerification: {
     displayName: 'Hospital Privilege Verification (HPV)',
@@ -622,8 +676,9 @@ const ContentTypeNames = {
     access: {
       [Pages.provider]: [D.WBY, D.CHS, D.WMS, D.CHA, D.GMI, D.GMD],
     },
-    required: [],
-    optional: [],
+    required:  [],
+    optional:  [],
+    vqVisible: true,
   },
   I9Attestation: {
     displayName: 'I-9 Attestation',
@@ -633,8 +688,9 @@ const ContentTypeNames = {
     access: {
       [Pages.provider]: [D.WMS, D.CHA],
     },
-    required: [],
-    optional: [M.DateSigned, M.DateOfLetter, M.ExpirationDate, M.IssueDate],
+    required:  [],
+    optional:  [M.DateSigned, M.DateOfLetter, M.ExpirationDate, M.IssueDate],
+    vqVisible: true,
   },
   ListOfProfessionalReferences: {
     displayName: 'List of Professional References',
@@ -644,8 +700,9 @@ const ContentTypeNames = {
     access: {
       [Pages.provider]: [D.WBY, D.CHS, D.WMS, D.GMI, D.GMD, D.CHA],
     },
-    required: [],
-    optional: [M.ClientID, M.PresentID, M.JobID, M.AssignmentID, M.AssignmentStartDate, M.AssignmentEndDate, M.DateOfLetter, M.DateSigned, M.ExpirationDate, M.IssueDate, M.ResultsDate, M.State],
+    required:  [],
+    optional:  [M.ClientID, M.PresentID, M.JobID, M.AssignmentID, M.AssignmentStartDate, M.AssignmentEndDate, M.DateOfLetter, M.DateSigned, M.ExpirationDate, M.IssueDate, M.ResultsDate, M.State],
+    vqVisible: true,
   },
   NationalPractitionerDataBankNPDBSelfQuery: {
     displayName: 'National Practitioner Data Bank (NPDB) Self Query',
@@ -655,8 +712,9 @@ const ContentTypeNames = {
     access: {
       [Pages.provider]: [D.ALL],
     },
-    required: [],
-    optional: [M.DateSigned, M.DateOfLetter, M.ExpirationDate, M.IssueDate, M.ResultsDate, M.State, M.ClientID, M.PresentID, M.JobID, M.AssignmentEndDate, M.AssignmentStartDate, M.AssignmentID],
+    required:  [],
+    optional:  [M.DateSigned, M.DateOfLetter, M.ExpirationDate, M.IssueDate, M.ResultsDate, M.State, M.ClientID, M.PresentID, M.JobID, M.AssignmentEndDate, M.AssignmentStartDate, M.AssignmentID],
+    vqVisible: true,
   },
   OfficeOfTheInspectorGeneralOIG: {
     displayName: 'Office of the Inspector General (OIG)',
@@ -666,8 +724,9 @@ const ContentTypeNames = {
     access: {
       [Pages.provider]: [D.WMS, D.CHA],
     },
-    required: [],
-    optional: [M.ExpirationDate],
+    required:  [],
+    optional:  [M.ExpirationDate],
+    vqVisible: true,
   },
   OrientationTest: {
     displayName: 'Orientation Test',
@@ -677,8 +736,9 @@ const ContentTypeNames = {
     access: {
       [Pages.provider]: [D.WMS, D.CHA],
     },
-    required: [],
-    optional: [M.ExpirationDate, M.TestDate],
+    required:  [],
+    optional:  [M.ExpirationDate, M.TestDate],
+    vqVisible: true,
   },
   PhysicianHealthProgramPHPContract: {
     displayName: 'Physician Health Program (PHP) Contract',
@@ -688,8 +748,9 @@ const ContentTypeNames = {
     access: {
       [Pages.provider]: [D.WBY, D.CHS, D.WMS, D.GMI, D.GMD],
     },
-    required: [],
-    optional: [M.ResultsDate],
+    required:  [],
+    optional:  [M.ResultsDate],
+    vqVisible: true,
   },
   PrimarySourceVerificationPSV: {
     displayName: 'Primary Source Verification (PSV)',
@@ -699,8 +760,9 @@ const ContentTypeNames = {
     access: {
       [Pages.provider]: [D.WBY, D.CHS, D.WMS, D.GMI, D.GMD],
     },
-    required: [],
-    optional: [M.DateSigned, M.DateOfLetter, M.ExpirationDate, M.IssueDate, M.ResultsDate, M.State, M.ClientID, M.PresentID, M.JobID, M.AssignmentEndDate, M.AssignmentStartDate, M.AssignmentID],
+    required:  [],
+    optional:  [M.DateSigned, M.DateOfLetter, M.ExpirationDate, M.IssueDate, M.ResultsDate, M.State, M.ClientID, M.PresentID, M.JobID, M.AssignmentEndDate, M.AssignmentStartDate, M.AssignmentID],
+    vqVisible: true,
   },
   ProfessionalLettersOfReference: {
     displayName: 'Professional Letters of Reference',
@@ -710,8 +772,9 @@ const ContentTypeNames = {
     access: {
       [Pages.provider]: [D.ALL],
     },
-    required: [],
-    optional: [M.DateOfLetter],
+    required:  [],
+    optional:  [M.DateOfLetter],
+    vqVisible: true,
   },
   ProviderApplication: {
     displayName: 'Provider Application',
@@ -721,8 +784,9 @@ const ContentTypeNames = {
     access: {
       [Pages.provider]: [D.ALL],
     },
-    required: [],
-    optional: [M.CompletedDate, M.ExpirationDate],
+    required:  [],
+    optional:  [M.CompletedDate, M.ExpirationDate],
+    vqVisible: true,
   },
   ProviderApprovalSummary: {
     displayName: 'Provider Approval Summary',
@@ -732,8 +796,9 @@ const ContentTypeNames = {
     access: {
       [Pages.provider]: [D.WBY, D.CHS, D.WMS, D.GMI, D.GMD, D.CHA],
     },
-    required: [],
-    optional: [M.ApprovalDate, M.SpecialtyLabel],
+    required:  [],
+    optional:  [M.ApprovalDate, M.SpecialtyLabel],
+    vqVisible: true,
   },
   ReferencesObtainedByCHG: {
     displayName: 'References Obtained by CHG',
@@ -743,8 +808,9 @@ const ContentTypeNames = {
     access: {
       [Pages.provider]: [D.ALL],
     },
-    required: [],
-    optional: [M.ExpirationDate, M.LastClinicalContactDate],
+    required:  [],
+    optional:  [M.ExpirationDate, M.LastClinicalContactDate],
+    vqVisible: true,
   },
   TravelingHandbookAcknowledgment: {
     displayName: 'Traveling Handbook Acknowledgment',
@@ -754,8 +820,9 @@ const ContentTypeNames = {
     access: {
       [Pages.provider]: [D.WBY, D.CHS, D.WMS, D.CHA],
     },
-    required: [],
-    optional: [M.DateSigned],
+    required:  [],
+    optional:  [M.DateSigned],
+    vqVisible: true,
   },
 
   // ── Provider Hospital Privileging and Licensing ───────────────────────
@@ -767,8 +834,9 @@ const ContentTypeNames = {
     access: {
       [Pages.provider]: [D.CHS, D.WBY, D.WMS, D.CHP, D.CAP, D.GMI, D.GMD],
     },
-    required: [],
-    optional: [M.State],
+    required:  [],
+    optional:  [M.State],
+    vqVisible: true,
   },
   CompletedLICApp: {
     displayName: 'Completed LIC App',
@@ -778,8 +846,9 @@ const ContentTypeNames = {
     access: {
       [Pages.provider]: [D.CHS, D.WBY, D.WMS, D.CHP, D.CAP, D.GMI, D.GMD],
     },
-    required: [],
-    optional: [M.State],
+    required:  [],
+    optional:  [M.State],
+    vqVisible: true,
   },
   HPApprovalLetter: {
     displayName: 'HP Approval Letter',
@@ -789,8 +858,9 @@ const ContentTypeNames = {
     access: {
       [Pages.provider]: [D.CHS, D.GMI, D.GMD, D.CHA, D.WBY, D.WMS],
     },
-    required: [],
-    optional: [M.PrivilegingStartDate, M.ExpirationDate],
+    required:  [],
+    optional:  [M.PrivilegingStartDate, M.ExpirationDate],
+    vqVisible: true,
   },
   HospitalPrivilegingPreFill: {
     displayName: 'Hospital Privileging Pre-Fill',
@@ -800,8 +870,9 @@ const ContentTypeNames = {
     access: {
       [Pages.provider]: [D.WBY, D.CHS, D.WMS, D.GMI, D.GMD, D.CHA],
     },
-    required: [],
-    optional: [],
+    required:  [],
+    optional:  [],
+    vqVisible: true,
   },
   LicensePreFill: {
     displayName: 'License Pre-Fill',
@@ -811,8 +882,9 @@ const ContentTypeNames = {
     access: {
       [Pages.provider]: [D.WBY, D.CHS, D.WMS, D.GMI, D.GMD, D.CHA],
     },
-    required: [],
-    optional: [],
+    required:  [],
+    optional:  [],
+    vqVisible: true,
   },
   PowerOfAttorneyPOA: {
     displayName: 'Power of Attorney (POA)',
@@ -822,8 +894,9 @@ const ContentTypeNames = {
     access: {
       [Pages.provider]: [D.WBY, D.CHS, D.WMS, D.GMI, D.GMD],
     },
-    required: [],
-    optional: [M.DateSigned],
+    required:  [],
+    optional:  [M.DateSigned],
+    vqVisible: true,
   },
   ProcedureLogs: {
     displayName: 'Procedure Logs',
@@ -833,8 +906,9 @@ const ContentTypeNames = {
     access: {
       [Pages.provider]: [D.WBY, D.CHS, D.WMS, D.GMI, D.GMD, D.CHA],
     },
-    required: [],
-    optional: [M.DateFrom, M.DateTo],
+    required:  [],
+    optional:  [M.DateFrom, M.DateTo],
+    vqVisible: true,
   },
   ProviderHPAndLicensingSupportDocuments: {
     displayName: 'Provider HP and Licensing Support Documents',
@@ -844,8 +918,9 @@ const ContentTypeNames = {
     access: {
       [Pages.provider]: [D.WBY, D.CHS, D.WMS, D.GMI, D.GMD, D.CHA],
     },
-    required: [],
-    optional: [],
+    required:  [],
+    optional:  [],
+    vqVisible: true,
   },
 
   // ── Professional Liability ────────────────────────────────────────────
@@ -858,8 +933,9 @@ const ContentTypeNames = {
       [Pages.provider]:   [D.WBY, D.CHS, D.WMS, D.GMI, D.GMD, D.CHA, D.CHP, D.CAP],
       [Pages.assignment]: [D.WBY, D.CHS, D.WMS, D.GMI, D.GMD, D.CHA, D.CHP, D.CAP],
     },
-    required: [],
-    optional: [M.ExpirationDate, M.IssueDate],
+    required:  [],
+    optional:  [M.ExpirationDate, M.IssueDate],
+    vqVisible: true,
   },
   CertificateOfInsuranceNonCHGCOI: {
     displayName: 'Certificate of Insurance - Non-CHG (COI)',
@@ -870,8 +946,9 @@ const ContentTypeNames = {
       [Pages.provider]:   [D.WBY, D.CHS, D.WMS, D.GMI, D.GMD, D.CHA, D.CHP, D.CAP],
       [Pages.assignment]: [D.WBY, D.CHS, D.WMS, D.GMI, D.GMD, D.CHA, D.CHP, D.CAP],
     },
-    required: [],
-    optional: [M.ExpirationDate, M.IssueDate],
+    required:  [],
+    optional:  [M.ExpirationDate, M.IssueDate],
+    vqVisible: true,
   },
   LegalDocumentationExcludingMalpractice: {
     displayName: 'Legal Documentation (Excluding Malpractice)',
@@ -881,8 +958,9 @@ const ContentTypeNames = {
     access: {
       [Pages.provider]: [D.WBY, D.CHS, D.WMS, D.CHA, D.CHP, D.CAP],
     },
-    required: [],
-    optional: [M.DateOfLetter],
+    required:  [],
+    optional:  [M.DateOfLetter],
+    vqVisible: true,
   },
   MalpracticeDocumentation: {
     displayName: 'Malpractice Documentation',
@@ -892,8 +970,9 @@ const ContentTypeNames = {
     access: {
       [Pages.provider]: [D.WBY, D.CHS, D.WMS, D.GMI, D.GMD, D.CHA, D.CHP, D.CAP],
     },
-    required: [M.SubCategory],
-    optional: [M.DateSigned, M.DateOfLetter, M.ExpirationDate, M.IssueDate, M.ResultsDate, M.State],
+    required:  [M.SubCategory],
+    optional:  [M.DateSigned, M.DateOfLetter, M.ExpirationDate, M.IssueDate, M.ResultsDate, M.State],
+    vqVisible: true,
   },
   ProfessionalLiabilitySupportDocuments: {
     displayName: 'Professional Liability Support Documents',
@@ -903,8 +982,9 @@ const ContentTypeNames = {
     access: {
       [Pages.provider]: [D.ALL],
     },
-    required: [],
-    optional: [],
+    required:  [],
+    optional:  [],
+    vqVisible: true,
   },
 
   // ── Job and Assignment ────────────────────────────────────────────────
@@ -917,8 +997,9 @@ const ContentTypeNames = {
       [Pages.provider]:   [D.WBY, D.CHS, D.WMS, D.GMI, D.GMD, D.CHA],
       [Pages.assignment]: [D.WBY, D.CHS, D.WMS, D.GMI, D.GMD, D.CHA],
     },
-    required: [],
-    optional: [M.AssignmentStartDate, M.AssignmentEndDate, M.ExternalLetterYN, M.SignedYN],
+    required:  [],
+    optional:  [M.AssignmentStartDate, M.AssignmentEndDate, M.ExternalLetterYN, M.SignedYN],
+    vqVisible: true,
   },
   ConfirmationChecklist: {
     displayName: 'Confirmation Checklist',
@@ -928,8 +1009,9 @@ const ContentTypeNames = {
     access: {
       [Pages.assignment]: [D.WBY, D.CHS, D.WMS],
     },
-    required: [],
-    optional: [],
+    required:  [],
+    optional:  [],
+    vqVisible: true,
   },
   JobAndAssignmentSupportDocuments: {
     displayName: 'Job and Assignment Support Documents',
@@ -939,8 +1021,9 @@ const ContentTypeNames = {
     access: {
       [Pages.provider]: [D.WBY, D.CHS, D.WMS, D.GMI, D.GMD, D.CHA, D.CHP, D.CAP],
     },
-    required: [],
-    optional: [],
+    required:  [],
+    optional:  [],
+    vqVisible: false,
   },
   JobPracticeDescription: {
     displayName: 'Job Practice Description',
@@ -951,8 +1034,9 @@ const ContentTypeNames = {
       [Pages.provider]:    [D.WBY, D.CHS, D.WMS, D.GMI, D.GMD, D.CHA],
       [Pages.opportunity]: [D.WBY, D.CHS, D.WMS, D.GMI, D.GMD, D.CHA, D.CHP, D.CAP],
     },
-    required: [],
-    optional: [M.JobID, M.Specialty],
+    required:  [],
+    optional:  [M.JobID, M.Specialty],
+    vqVisible: false,
   },
   JobRequestDetails: {
     displayName: 'Job Request Details',
@@ -962,8 +1046,9 @@ const ContentTypeNames = {
     access: {
       [Pages.opportunity]: [D.WBY, D.CHS, D.WMS, D.GMI, D.GMD, D.CHA, D.CHP, D.CAP],
     },
-    required: [M.ExternalID],
-    optional: [],
+    required:  [M.ExternalID],
+    optional:  [],
+    vqVisible: false,
   },
   MealBreakWaiverFormCompleted: {
     displayName: 'Meal Break Waiver Form (Completed)',
@@ -974,8 +1059,9 @@ const ContentTypeNames = {
       [Pages.provider]:   [D.WBY, D.CHS, D.WMS, D.CHA],
       [Pages.assignment]: [D.WBY, D.CHS, D.WMS, D.CHA],
     },
-    required: [],
-    optional: [M.DateSigned, M.DateOfLetter, M.ExpirationDate, M.IssueDate, M.ResultsDate, M.State],
+    required:  [],
+    optional:  [M.DateSigned, M.DateOfLetter, M.ExpirationDate, M.IssueDate, M.ResultsDate, M.State],
+    vqVisible: true,
   },
   OrientationInformation: {
     displayName: 'Orientation Information',
@@ -985,8 +1071,9 @@ const ContentTypeNames = {
     access: {
       [Pages.assignment]: [D.WBY, D.CHS, D.WMS, D.GMI, D.GMD, D.CHA],
     },
-    required: [],
-    optional: [],
+    required:  [],
+    optional:  [],
+    vqVisible: true,
   },
   QAEval: {
     displayName: 'QA Eval',
@@ -996,8 +1083,9 @@ const ContentTypeNames = {
     access: {
       [Pages.provider]: [D.ALL],
     },
-    required: [],
-    optional: [M.DateOfLetter],
+    required:  [],
+    optional:  [M.DateOfLetter],
+    vqVisible: true,
   },
 
   // ── Work, Gap, Military History ───────────────────────────────────────
@@ -1009,8 +1097,9 @@ const ContentTypeNames = {
     access: {
       [Pages.provider]: [D.WBY, D.CHS, D.WMS, D.GMI, D.GMD, D.CHA],
     },
-    required: [],
-    optional: [M.DateSigned, M.DateOfLetter, M.ExpirationDate, M.IssueDate, M.ResultsDate],
+    required:  [],
+    optional:  [M.DateSigned, M.DateOfLetter, M.ExpirationDate, M.IssueDate, M.ResultsDate],
+    vqVisible: true,
   },
   ExplanationOfGapsInHistory: {
     displayName: 'Explanation of Gaps in History',
@@ -1020,8 +1109,9 @@ const ContentTypeNames = {
     access: {
       [Pages.provider]: [D.WBY, D.WMS, D.CHS, D.GMI, D.GMD, D.CHA],
     },
-    required: [],
-    optional: [M.DateOfLetter],
+    required:  [],
+    optional:  [M.DateOfLetter],
+    vqVisible: true,
   },
   MilitaryService: {
     displayName: 'Military Service',
@@ -1031,8 +1121,9 @@ const ContentTypeNames = {
     access: {
       [Pages.provider]: [D.ALL],
     },
-    required: [M.SubCategory],
-    optional: [M.IssueDate, M.ExpirationDate],
+    required:  [M.SubCategory],
+    optional:  [M.IssueDate, M.ExpirationDate],
+    vqVisible: true,
   },
   WorkHistory: {
     displayName: 'Work History',
@@ -1042,8 +1133,9 @@ const ContentTypeNames = {
     access: {
       [Pages.provider]: [D.WBY, D.CHS, D.WMS, D.GMI, D.GMD, D.CHA],
     },
-    required: [],
-    optional: [M.DateSigned, M.DateOfLetter, M.ExpirationDate, M.ResultsDate, M.State],
+    required:  [],
+    optional:  [M.DateSigned, M.DateOfLetter, M.ExpirationDate, M.ResultsDate, M.State],
+    vqVisible: true,
   },
 
   // ── Housing and Travel ────────────────────────────────────────────────
@@ -1056,8 +1148,9 @@ const ContentTypeNames = {
       [Pages.provider]:   [D.WBY, D.CHS, D.WMS, D.GMI, D.GMD, D.CHA],
       [Pages.assignment]: [D.WBY, D.CHS, D.WMS, D.GMI, D.GMD, D.CHA],
     },
-    required: [M.AssignmentID],
-    optional: [M.AssignmentEndDate, M.AssignmentStartDate, M.DateSigned],
+    required:  [M.AssignmentID],
+    optional:  [M.AssignmentEndDate, M.AssignmentStartDate, M.DateSigned],
+    vqVisible: false,
   },
   CarRental: {
     displayName: 'Car Rental',
@@ -1068,8 +1161,9 @@ const ContentTypeNames = {
       [Pages.provider]:   [D.WBY, D.CHS, D.WMS, D.GMI, D.GMD, D.CHA],
       [Pages.assignment]: [D.WBY, D.CHS, D.WMS, D.GMI, D.GMD, D.CHA],
     },
-    required: [M.AssignmentID],
-    optional: [M.AssignmentEndDate, M.AssignmentStartDate, M.DateSigned],
+    required:  [M.AssignmentID],
+    optional:  [M.AssignmentEndDate, M.AssignmentStartDate, M.DateSigned],
+    vqVisible: false,
   },
   HotelFolio: {
     displayName: 'Hotel Folio',
@@ -1080,8 +1174,9 @@ const ContentTypeNames = {
       [Pages.provider]:   [D.WBY, D.CHS, D.WMS, D.GMI, D.GMD, D.CHA],
       [Pages.assignment]: [D.WBY, D.CHS, D.WMS, D.GMI, D.GMD, D.CHA],
     },
-    required: [M.AssignmentID],
-    optional: [M.AssignmentEndDate, M.AssignmentStartDate, M.DateSigned],
+    required:  [M.AssignmentID],
+    optional:  [M.AssignmentEndDate, M.AssignmentStartDate, M.DateSigned],
+    vqVisible: false,
   },
   HousingKeyRelease: {
     displayName: 'Housing - Key Release',
@@ -1091,8 +1186,9 @@ const ContentTypeNames = {
     access: {
       [Pages.assignment]: [D.WBY, D.CHS, D.WMS, D.GMI, D.GMD, D.CHA],
     },
-    required: [],
-    optional: [M.AssignmentID, M.AssignmentEndDate, M.AssignmentStartDate, M.DateSigned, M.HousingRequestID, M.MoveInDate, M.MoveOutDate],
+    required:  [],
+    optional:  [M.AssignmentID, M.AssignmentEndDate, M.AssignmentStartDate, M.DateSigned, M.HousingRequestID, M.MoveInDate, M.MoveOutDate],
+    vqVisible: false,
   },
   HousingLease: {
     displayName: 'Housing - Lease',
@@ -1102,8 +1198,9 @@ const ContentTypeNames = {
     access: {
       [Pages.assignment]: [D.WBY, D.CHS, D.WMS, D.GMI, D.GMD, D.CHA],
     },
-    required: [],
-    optional: [M.AssignmentID, M.AssignmentEndDate, M.AssignmentStartDate, M.HousingRequestID, M.MoveInDate, M.MoveOutDate],
+    required:  [],
+    optional:  [M.AssignmentID, M.AssignmentEndDate, M.AssignmentStartDate, M.HousingRequestID, M.MoveInDate, M.MoveOutDate],
+    vqVisible: false,
   },
   HousingMoveInInstructions: {
     displayName: 'Housing - Move In Instructions',
@@ -1113,8 +1210,9 @@ const ContentTypeNames = {
     access: {
       [Pages.assignment]: [D.WBY, D.CHS, D.WMS, D.GMI, D.GMD, D.CHA],
     },
-    required: [],
-    optional: [M.AssignmentID, M.AssignmentEndDate, M.AssignmentStartDate, M.HousingRequestID, M.MoveInDate, M.MoveOutDate],
+    required:  [],
+    optional:  [M.AssignmentID, M.AssignmentEndDate, M.AssignmentStartDate, M.HousingRequestID, M.MoveInDate, M.MoveOutDate],
+    vqVisible: false,
   },
   HousingPetAgreement: {
     displayName: 'Housing - Pet Agreement',
@@ -1124,8 +1222,9 @@ const ContentTypeNames = {
     access: {
       [Pages.assignment]: [D.WBY, D.WMS, D.GMI, D.GMD, D.CHA],
     },
-    required: [],
-    optional: [M.AssignmentID, M.AssignmentEndDate, M.AssignmentStartDate, M.HousingRequestID, M.MoveInDate, M.MoveOutDate],
+    required:  [],
+    optional:  [M.AssignmentID, M.AssignmentEndDate, M.AssignmentStartDate, M.HousingRequestID, M.MoveInDate, M.MoveOutDate],
+    vqVisible: false,
   },
   HousingRulesAndRegulations: {
     displayName: 'Housing - Rules and Regulations',
@@ -1135,8 +1234,9 @@ const ContentTypeNames = {
     access: {
       [Pages.assignment]: [D.WBY, D.CHS, D.WMS, D.GMI, D.GMD, D.CHA],
     },
-    required: [],
-    optional: [M.AssignmentID, M.AssignmentEndDate, M.AssignmentStartDate, M.HousingRequestID, M.MoveInDate, M.MoveOutDate],
+    required:  [],
+    optional:  [M.AssignmentID, M.AssignmentEndDate, M.AssignmentStartDate, M.HousingRequestID, M.MoveInDate, M.MoveOutDate],
+    vqVisible: false,
   },
   HousingStipendForm: {
     displayName: 'Housing Allowance Stipend Form',
@@ -1147,8 +1247,9 @@ const ContentTypeNames = {
       [Pages.provider]:   [D.WMS, D.CHA],
       [Pages.assignment]: [D.CHA, D.WMS],
     },
-    required: [],
-    optional: [M.DateSigned],
+    required:  [],
+    optional:  [M.DateSigned],
+    vqVisible: false,
   },
   MileageMaps: {
     displayName: 'Mileage Maps',
@@ -1158,8 +1259,9 @@ const ContentTypeNames = {
     access: {
       [Pages.assignment]: [D.WBY, D.CHS, D.WMS, D.GMI, D.GMD, D.CHA],
     },
-    required: [M.AssignmentID, M.ClientID, M.ClientName, M.JobID, M.PresentID],
-    optional: [M.AssignmentEndDate, M.AssignmentStartDate],
+    required:  [M.AssignmentID, M.ClientID, M.ClientName, M.JobID, M.PresentID],
+    optional:  [M.AssignmentEndDate, M.AssignmentStartDate],
+    vqVisible: true,
   },
   RentalCarIncident: {
     displayName: 'Rental Car Incident',
@@ -1169,8 +1271,9 @@ const ContentTypeNames = {
     access: {
       [Pages.assignment]: [D.WBY, D.CHS, D.WMS, D.CHA],
     },
-    required: [],
-    optional: [M.DateOfIncident],
+    required:  [],
+    optional:  [M.DateOfIncident],
+    vqVisible: true,
   },
   TravelApprovals: {
     displayName: 'Travel Approvals',
@@ -1180,8 +1283,9 @@ const ContentTypeNames = {
     access: {
       [Pages.assignment]: [D.WBY, D.CHS, D.WMS, D.GMI, D.GMD, D.CHA],
     },
-    required: [M.AssignmentID, M.ClientID, M.ClientName, M.JobID, M.PresentID],
-    optional: [M.AssignmentEndDate, M.AssignmentStartDate],
+    required:  [M.AssignmentID, M.ClientID, M.ClientName, M.JobID, M.PresentID],
+    optional:  [M.AssignmentEndDate, M.AssignmentStartDate],
+    vqVisible: true,
   },
   TravelExceptions: {
     displayName: 'Travel Exceptions',
@@ -1191,8 +1295,9 @@ const ContentTypeNames = {
     access: {
       [Pages.assignment]: [D.WBY, D.CHS, D.WMS, D.GMI, D.GMD, D.CHA],
     },
-    required: [M.AssignmentID, M.ClientID, M.ClientName, M.JobID, M.PresentID],
-    optional: [M.AssignmentEndDate, M.AssignmentStartDate],
+    required:  [M.AssignmentID, M.ClientID, M.ClientName, M.JobID, M.PresentID],
+    optional:  [M.AssignmentEndDate, M.AssignmentStartDate],
+    vqVisible: true,
   },
   TravelItinerary: {
     displayName: 'Travel Itinerary',
@@ -1203,8 +1308,9 @@ const ContentTypeNames = {
       [Pages.provider]:   [D.WBY, D.CHS, D.WMS, D.GMI, D.GMD, D.CHA],
       [Pages.assignment]: [D.WBY, D.CHS, D.WMS, D.GMI, D.GMD, D.CHA],
     },
-    required: [M.AssignmentID, M.ClientID, M.ClientName, M.JobID, M.PresentID],
-    optional: [M.AssignmentEndDate, M.AssignmentStartDate],
+    required:  [M.AssignmentID, M.ClientID, M.ClientName, M.JobID, M.PresentID],
+    optional:  [M.AssignmentEndDate, M.AssignmentStartDate],
+    vqVisible: true,
   },
 
   // ── International ─────────────────────────────────────────────────────
@@ -1216,8 +1322,9 @@ const ContentTypeNames = {
     access: {
       [Pages.provider]: [D.GMI, D.GMD],
     },
-    required: [],
-    optional: [M.DateFrom, M.DateTo, M.IssueDate],
+    required:  [],
+    optional:  [M.DateFrom, M.DateTo, M.IssueDate],
+    vqVisible: true,
   },
   INTLImmigration: {
     displayName: 'INTL Immigration',
@@ -1227,8 +1334,9 @@ const ContentTypeNames = {
     access: {
       [Pages.provider]: [D.GMI, D.GMD],
     },
-    required: [M.SubCategory],
-    optional: [M.DateFrom, M.DateTo, M.IssueDate],
+    required:  [M.SubCategory],
+    optional:  [M.DateFrom, M.DateTo, M.IssueDate],
+    vqVisible: true,
   },
   INTLMedicalRegistration: {
     displayName: 'INTL Medical Registration',
@@ -1238,8 +1346,9 @@ const ContentTypeNames = {
     access: {
       [Pages.provider]: [D.GMI, D.GMD],
     },
-    required: [M.SubCategory],
-    optional: [M.DateFrom, M.DateTo, M.IssueDate],
+    required:  [M.SubCategory],
+    optional:  [M.DateFrom, M.DateTo, M.IssueDate],
+    vqVisible: true,
   },
   INTLTaxInformation: {
     displayName: 'INTL Tax Information',
@@ -1249,8 +1358,9 @@ const ContentTypeNames = {
     access: {
       [Pages.provider]: [D.GMI, D.GMD],
     },
-    required: [M.SubCategory],
-    optional: [M.ExpirationDate, M.IssueDate],
+    required:  [M.SubCategory],
+    optional:  [M.ExpirationDate, M.IssueDate],
+    vqVisible: true,
   },
   InternationalMedicalDefense: {
     displayName: 'International Medical Defense',
@@ -1260,8 +1370,9 @@ const ContentTypeNames = {
     access: {
       [Pages.provider]: [D.GMI, D.GMD],
     },
-    required: [M.SubCategory, M.Classification],
-    optional: [M.FacilityName, M.ApplicationDate],
+    required:  [M.SubCategory, M.Classification],
+    optional:  [M.FacilityName, M.ApplicationDate],
+    vqVisible: true,
   },
   JobOffer: {
     displayName: 'Job Offer',
@@ -1271,8 +1382,9 @@ const ContentTypeNames = {
     access: {
       [Pages.provider]: [D.GMI, D.GMD],
     },
-    required: [M.AssignmentID, M.ClientID, M.PresentID, M.JobID],
-    optional: [M.AssignmentEndDate, M.AssignmentStartDate],
+    required:  [M.AssignmentID, M.ClientID, M.PresentID, M.JobID],
+    optional:  [M.AssignmentEndDate, M.AssignmentStartDate],
+    vqVisible: false,
   },
   NZIRDNumber: {
     displayName: 'NZ IRD Number',
@@ -1282,8 +1394,9 @@ const ContentTypeNames = {
     access: {
       [Pages.provider]: [D.GMI, D.GMD],
     },
-    required: [],
-    optional: [M.EffectiveDate, M.IssueDate],
+    required:  [],
+    optional:  [M.EffectiveDate, M.IssueDate],
+    vqVisible: false,
   },
   NZTaxExemptionCertificate: {
     displayName: 'NZ Tax Exemption Certificate',
@@ -1293,8 +1406,9 @@ const ContentTypeNames = {
     access: {
       [Pages.provider]: [D.GMI, D.GMD],
     },
-    required: [],
-    optional: [M.EffectiveDate, M.IssueDate],
+    required:  [],
+    optional:  [M.EffectiveDate, M.IssueDate],
+    vqVisible: false,
   },
 
   // ── Financial & Tax ───────────────────────────────────────────────────
@@ -1306,8 +1420,9 @@ const ContentTypeNames = {
     access: {
       [Pages.assignment]: [D.ALL],
     },
-    required: [],
-    optional: [],
+    required:  [],
+    optional:  [],
+    vqVisible: false,
   },
   DirectDeposit: {
     displayName: 'Direct Deposit',
@@ -1317,8 +1432,20 @@ const ContentTypeNames = {
     access: {
       [Pages.provider]: [D.WBY, D.CHS, D.WMS, D.GMI, D.GMD, D.CHA],
     },
-    required: [],
-    optional: [M.EffectiveDate],
+    required:  [],
+    optional:  [M.EffectiveDate],
+    vqVisible: true,
+  },
+  DeferredCompensationAgreement: {
+    // TODO: missing entry in original ContentTypeNames — confirm code, category, and lifecycle with team
+    displayName: 'Deferred Compensation Agreement',
+    code:        null,
+    category:    null,
+    lifecycle:   null,
+    access:      {},
+    required:    [],
+    optional:    [],
+    vqVisible:   true,
   },
   PermanentTaxResidenceFormCompleted: {
     displayName: 'Permanent Tax Residence Form (Completed)',
@@ -1329,8 +1456,9 @@ const ContentTypeNames = {
       [Pages.provider]:   [D.WBY, D.CHS, D.WMS, D.CHA],
       [Pages.assignment]: [D.WBY, D.CHS, D.WMS, D.CHA],
     },
-    required: [],
-    optional: [M.EffectiveDate, M.ExpirationDate],
+    required:  [],
+    optional:  [M.EffectiveDate, M.ExpirationDate],
+    vqVisible: true,
   },
   tenNinetyNine: {
     displayName: '1099',
@@ -1340,8 +1468,9 @@ const ContentTypeNames = {
     access: {
       [Pages.provider]: [D.WBY, D.CHS, D.WMS, D.GMI, D.GMD],
     },
-    required: [],
-    optional: [M.AssignmentID, M.IssueDate],
+    required:  [],
+    optional:  [M.AssignmentID, M.IssueDate],
+    vqVisible: false,
   },
   W2: {
     displayName: 'W-2',
@@ -1351,8 +1480,9 @@ const ContentTypeNames = {
     access: {
       [Pages.provider]: [D.WBY, D.CHS, D.WMS, D.GMI, D.GMD],
     },
-    required: [],
-    optional: [M.DateSigned],
+    required:  [],
+    optional:  [M.DateSigned],
+    vqVisible: false,
   },
   W9: {
     displayName: 'W9',
@@ -1362,8 +1492,9 @@ const ContentTypeNames = {
     access: {
       [Pages.provider]: [D.WBY, D.CHS, D.WMS, D.GMI, D.GMD, D.CHA],
     },
-    required: [],
-    optional: [M.DateSigned, M.SubstituteForm],
+    required:  [],
+    optional:  [M.DateSigned, M.SubstituteForm],
+    vqVisible: true,
   },
 
   // ── Work Records ──────────────────────────────────────────────────────
@@ -1376,8 +1507,9 @@ const ContentTypeNames = {
       [Pages.provider]:   [D.ALL],
       [Pages.assignment]: [D.ALL],
     },
-    required: [M.Audited],
-    optional: [M.PayPeriodStart, M.PayPeriodEnd, M.AssignmentID],
+    required:  [M.Audited],
+    optional:  [M.PayPeriodStart, M.PayPeriodEnd, M.AssignmentID],
+    vqVisible: false,
   },
 
   // ── Contracts ─────────────────────────────────────────────────────────
@@ -1391,8 +1523,9 @@ const ContentTypeNames = {
     access: {
       [Pages.client]: [D.WBY, D.CHS, D.WMS, D.GMI, D.GMD, D.CHA, D.CHP, D.CAP],
     },
-    required: [],
-    optional: [M.DateSigned, M.EffectiveDate, M.ExpirationDate, M.Division],
+    required:  [],
+    optional:  [M.DateSigned, M.EffectiveDate, M.ExpirationDate, M.Division],
+    vqVisible: false,
   },
   ClientAddendumAssignmentPage: {
     displayName: 'Client Addendum',
@@ -1402,8 +1535,9 @@ const ContentTypeNames = {
     access: {
       [Pages.assignment]: [D.WBY, D.CHS, D.WMS, D.GMI, D.GMD, D.CHA, D.CHP, D.CAP],
     },
-    required: [],
-    optional: [M.DateSigned, M.EffectiveDate, M.ExpirationDate],
+    required:  [],
+    optional:  [M.DateSigned, M.EffectiveDate, M.ExpirationDate],
+    vqVisible: false,
   },
   ClientAgreements: {
     displayName: 'Client Agreements',
@@ -1413,8 +1547,9 @@ const ContentTypeNames = {
     access: {
       [Pages.client]: [D.WBY, D.CHS, D.WMS, D.GMI, D.GMD, D.CHA, D.CHP, D.CAP],
     },
-    required: [M.SubCategory],
-    optional: [M.Classification, M.DateSent, M.DateSigned, M.EffectiveDate, M.ExpirationDate, M.Division],
+    required:  [M.SubCategory],
+    optional:  [M.Classification, M.DateSent, M.DateSigned, M.EffectiveDate, M.ExpirationDate, M.Division],
+    vqVisible: false,
   },
   ClientAgreementsAssignmentPage: {
     displayName: 'Client Agreements',
@@ -1424,8 +1559,9 @@ const ContentTypeNames = {
     access: {
       [Pages.assignment]: [D.WBY, D.CHS, D.WMS, D.GMI, D.GMD, D.CHA, D.CHP, D.CAP],
     },
-    required: [M.SubCategory],
-    optional: [M.Classification],
+    required:  [M.SubCategory],
+    optional:  [M.Classification],
+    vqVisible: false,
   },
   ClientAmendments: {
     displayName: 'Client Amendments',
@@ -1435,8 +1571,9 @@ const ContentTypeNames = {
     access: {
       [Pages.client]: [D.WBY, D.CHS, D.WMS, D.GMI, D.GMD, D.CHA, D.CHP, D.CAP],
     },
-    required: [M.SubCategory],
-    optional: [M.EffectiveDate, M.ExpirationDate, M.DateSigned, M.Division],
+    required:  [M.SubCategory],
+    optional:  [M.EffectiveDate, M.ExpirationDate, M.DateSigned, M.Division],
+    vqVisible: false,
   },
   ClientAmendmentsAssignmentPage: {
     displayName: 'Client Amendments',
@@ -1446,8 +1583,9 @@ const ContentTypeNames = {
     access: {
       [Pages.assignment]: [D.WBY, D.CHS, D.WMS, D.GMI, D.GMD, D.CHA, D.CHP, D.CAP],
     },
-    required: [M.SubCategory],
-    optional: [],
+    required:  [M.SubCategory],
+    optional:  [],
+    vqVisible: false,
   },
   ClientCancellationLetter: {
     displayName: 'Client Cancellation Letter',
@@ -1457,8 +1595,9 @@ const ContentTypeNames = {
     access: {
       [Pages.client]: [D.WBY, D.CHS, D.WMS, D.GMI, D.GMD, D.CHA, D.CHP, D.CAP],
     },
-    required: [],
-    optional: [M.EffectiveDateOfCancellation],
+    required:  [],
+    optional:  [M.EffectiveDateOfCancellation],
+    vqVisible: false,
   },
   ClientConfirmations: {
     displayName: 'Client Confirmations',
@@ -1469,8 +1608,9 @@ const ContentTypeNames = {
       [Pages.client]:  [D.CHP, D.CAP],
       [Pages.account]: [D.CHP, D.CAP],
     },
-    required: [],
-    optional: [M.AssignmentStartDate, M.AssignmentEndDate, M.EffectiveDate, M.ExpirationDate, M.DateSigned, M.IssueDate],
+    required:  [],
+    optional:  [M.AssignmentStartDate, M.AssignmentEndDate, M.EffectiveDate, M.ExpirationDate, M.DateSigned, M.IssueDate],
+    vqVisible: false,
   },
   DealSheet: {
     displayName: 'Deal Sheet',
@@ -1482,8 +1622,9 @@ const ContentTypeNames = {
       [Pages.client]:   [D.CHP, D.CAP],
       [Pages.account]:  [D.CHP, D.CAP],
     },
-    required: [],
-    optional: [],
+    required:  [],
+    optional:  [],
+    vqVisible: false,
   },
   ProviderAgreement: {
     displayName: 'Provider Agreement',
@@ -1493,8 +1634,9 @@ const ContentTypeNames = {
     access: {
       [Pages.provider]: [D.WBY, D.CHS, D.WMS, D.GMI, D.GMD, D.CHA, D.CHP, D.CAP],
     },
-    required: [M.SubCategory],
-    optional: [M.Classification, M.DateSigned, M.EffectiveDate, M.ExpirationDate],
+    required:  [M.SubCategory],
+    optional:  [M.Classification, M.DateSigned, M.EffectiveDate, M.ExpirationDate],
+    vqVisible: false,
   },
   ProviderAmendment: {
     displayName: 'Provider Amendment',
@@ -1504,8 +1646,9 @@ const ContentTypeNames = {
     access: {
       [Pages.provider]: [D.WBY, D.CHS, D.WMS, D.GMI, D.GMD, D.CHA],
     },
-    required: [M.SubCategory],
-    optional: [M.ExpirationDate, M.IssueDate, M.EffectiveDate, M.DateSigned],
+    required:  [M.SubCategory],
+    optional:  [M.ExpirationDate, M.IssueDate, M.EffectiveDate, M.DateSigned],
+    vqVisible: false,
   },
   PurchaseOrder: {
     displayName: 'Purchase Order',
@@ -1516,8 +1659,9 @@ const ContentTypeNames = {
       [Pages.client]:     [D.WBY, D.WMS, D.GMI, D.GMD, D.CHA],
       [Pages.assignment]: [D.WBY, D.WMS, D.GMI, D.GMD, D.CHA],
     },
-    required: [],
-    optional: [M.EffectiveDate, M.ExpirationDate],
+    required:  [],
+    optional:  [M.EffectiveDate, M.ExpirationDate],
+    vqVisible: false,
   },
   ReferralAgreement: {
     displayName: 'Referral Agreement',
@@ -1527,8 +1671,9 @@ const ContentTypeNames = {
     access: {
       [Pages.client]: [D.CHA, D.CHS],
     },
-    required: [],
-    optional: [],
+    required:  [],
+    optional:  [],
+    vqVisible: false,
   },
   RequestForProposalRFP: {
     displayName: 'Request for Proposal (RFP)',
@@ -1538,8 +1683,9 @@ const ContentTypeNames = {
     access: {
       [Pages.client]: [D.CHS, D.GMI, D.GMD, D.CHA, D.CHP, D.CAP],
     },
-    required: [],
-    optional: [M.ExpirationDate, M.EffectiveDate, M.RFPNumber],
+    required:  [],
+    optional:  [M.ExpirationDate, M.EffectiveDate, M.RFPNumber],
+    vqVisible: false,
   },
 
   // ── Client Documents ──────────────────────────────────────────────────
@@ -1549,8 +1695,9 @@ const ContentTypeNames = {
     category:    Categories.ClientDocuments,
     lifecycle:   Lifecycles.Client,
     access: {},   // page not documented in Confluence — confirm with team
-    required: [M.SubCategory, M.Classification, M.Division],
-    optional: [M.ApprovalDate],
+    required:  [M.SubCategory, M.Classification, M.Division],
+    optional:  [M.ApprovalDate],
+    vqVisible: false,
   },
   ClientSupportingDocuments: {
     displayName: 'Client Supporting Documents',
@@ -1558,8 +1705,9 @@ const ContentTypeNames = {
     category:    Categories.ClientDocuments,
     lifecycle:   Lifecycles.ProviderProcessDriven,
     access: {},   // page not documented in Confluence — confirm with team
-    required: [],
-    optional: [],
+    required:  [],
+    optional:  [],
+    vqVisible: false,
   },
 
   // ── Pay Stubs ─────────────────────────────────────────────────────────
@@ -1571,8 +1719,9 @@ const ContentTypeNames = {
     access: {
       [Pages.provider]: [D.WBY, D.CHS, D.WMS, D.GMI, D.GMD, D.CHA],
     },
-    required: [],
-    optional: [M.AssignmentStartDate, M.AssignmentEndDate, M.AssignmentID, M.ClientID, M.ClientName, M.JobID, M.PayPeriodDate, M.PresentID],
+    required:  [],
+    optional:  [M.AssignmentStartDate, M.AssignmentEndDate, M.AssignmentID, M.ClientID, M.ClientName, M.JobID, M.PayPeriodDate, M.PresentID],
+    vqVisible: false,
   },
 
   // ── Misc / Test ───────────────────────────────────────────────────────
@@ -1582,8 +1731,9 @@ const ContentTypeNames = {
     category:    Categories.ProviderInternalCredentialing,
     lifecycle:   Lifecycles.Misc,
     access: {},
-    required: [],
-    optional: [],
+    required:  [],
+    optional:  [],
+    vqVisible: false,
   },
   Investigating: {
     displayName: 'Investigating',
@@ -1591,8 +1741,9 @@ const ContentTypeNames = {
     category:    Categories.ProviderInternalCredentialing,
     lifecycle:   Lifecycles.Misc,
     access: {},
-    required: [M.ReasonForSupport],
-    optional: [],
+    required:  [M.ReasonForSupport],
+    optional:  [],
+    vqVisible: true,
   },
 };
 
