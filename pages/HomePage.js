@@ -4,21 +4,21 @@ const environment = require('../config/environments');
 class HomePage extends BasePage {
   constructor(page) {
     super(page);
-    this.uploadButton  = page.getByRole('button', { name: 'Upload' });
+    this.uploadButton = page.getByRole('button', { name: 'Upload' });
     this.requestButton = page.getByRole('button', { name: 'Request' });
 
     // Bulk action buttons
-    this.bulkViewButton     = page.getByRole('button', { name: 'View' });
+    this.bulkViewButton = page.getByRole('button', { name: 'View' });
     this.bulkDownloadButton = page.getByRole('button', { name: 'Download' });
-    this.bulkArchiveButton  = page.getByRole('button', { name: 'Archive' });
-    this.bulkClearButton    = page.getByRole('button', { name: 'Clear' });
+    this.bulkArchiveButton = page.getByRole('button', { name: 'Archive' });
+    this.bulkClearButton = page.getByRole('button', { name: 'Clear' });
 
     // Error modal
-    this.errorModalMessage  = page.getByTestId('error-modal-message');
+    this.errorModalMessage = page.getByTestId('error-modal-message');
 
     // Okta session expiry dialog
-    this.oktaSessionDialog  = page.getByText('Your Okta session has ended');
-    this.oktaSessionOkBtn   = page.getByRole('button', { name: 'OK' });
+    this.oktaSessionDialog = page.getByText('Your Okta session has ended');
+    this.oktaSessionOkBtn = page.getByRole('button', { name: 'OK' });
   }
 
   // Replaces: homeSteps.openHomePage(entityId, page, division)
@@ -38,8 +38,12 @@ class HomePage extends BasePage {
     }
   }
 
-  // Replaces: homeSteps.openUploadButtonModal()
   async openUploadModal() {
+    const modal = this.page.locator('#upload-document-modal');
+    if (await modal.isVisible()) {
+      await this.page.getByRole('button', { name: 'Close' }).click();
+      await modal.waitFor({ state: 'hidden' });
+    }
     await this.uploadButton.waitFor({ state: 'visible' });
     await this.uploadButton.click();
   }

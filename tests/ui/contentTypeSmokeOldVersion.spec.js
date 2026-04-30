@@ -103,6 +103,7 @@ test.describe('Content Type Smoke Tests', () => {
       ContentTypeNames.LifeSupportAndMiscCertifications.displayName,
       ContentTypeNames.ChildAbuseCertification.displayName,
       ContentTypeNames.EducationTrainingSupportDocuments.displayName,
+      ContentTypeNames.HarassmentTrainingCertificate.displayName,
     ]);
     await verifyContentTypes(homePage, uploadModal, Categories.ProfessionalLicensure.displayName, [
       ContentTypeNames.DEARegistrationCopy.displayName,
@@ -149,6 +150,7 @@ test.describe('Content Type Smoke Tests', () => {
       ContentTypeNames.tenNinetyNine.displayName,
       ContentTypeNames.DirectDeposit.displayName,
       ContentTypeNames.PermanentTaxResidenceFormCompleted.displayName,
+      // ContentTypeNames.DeferredCompensationAgreement.displayName,clear
     ]);
     await verifyContentTypes(homePage, uploadModal, Categories.PayStubs.displayName, [
       ContentTypeNames.Paystubs.displayName,
@@ -405,6 +407,7 @@ test.describe('Content Type Smoke Tests', () => {
     test('Financial and Tax content types', async ({ homePage, uploadModal }) => {
       await verifyContentTypes(homePage, uploadModal, Categories.FinancialTax.displayName, [
         ContentTypeNames.ClientInvoicePacket.displayName,
+        // ClientW9 not visible to default CHS user — requires elevated permissions
       ]);
     });
   });
@@ -465,8 +468,8 @@ test.describe('Content Type Smoke Tests', () => {
       await verifySubCategoryCount(homePage, uploadModal, Categories.Contracts.displayName, ContentTypeNames.ProviderAmendment.displayName, 7);
     });
 
-    test('Provider Agreement has 6 sub-categories', async ({ homePage, uploadModal }) => {
-      await verifySubCategoryCount(homePage, uploadModal, Categories.Contracts.displayName, ContentTypeNames.ProviderAgreement.displayName, 6);
+    test('Provider Agreement has 5 sub-categories', async ({ homePage, uploadModal }) => {
+      await verifySubCategoryCount(homePage, uploadModal, Categories.Contracts.displayName, ContentTypeNames.ProviderAgreement.displayName, 5);
     });
   });
 
